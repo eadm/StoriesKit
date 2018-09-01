@@ -7,7 +7,7 @@ android {
     buildToolsVersion versions.buildTools
 
     defaultConfig {
-        applicationId "ru.nobird.android.stories"
+        applicationId "ru.nobird.android.stories.sample"
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         versionCode versions.code

@@ -1,12 +1,14 @@
 package ru.nobird.android.stories.ui.activity
 
 import android.os.Bundle
+import android.util.Log
+import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
-import ru.nobird.android.stories.R
 
-class StoriesActivity : AppCompatActivity() {
+abstract class StoriesActivityBase : AppCompatActivity() {
+    @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_stories)
+        Log.d(javaClass.canonicalName, "$parent")
     }
 }

@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -26,4 +27,6 @@ dependencies {
     implementation libraries.kotlin
     implementation libraries.appCompat
     implementation libraries.viewPager
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
