@@ -1,5 +1,6 @@
 package ru.nobird.android.stories.ui.custom
 
+import android.animation.AnimatorSet
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
@@ -26,6 +27,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     private var startY = 0f
     private var intercepted = false
 
+    private var rollbackAnimation: AnimatorSet? = null
+
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
         processTouchEvent(event, false)
         return intercepted || super.onInterceptTouchEvent(event)
@@ -42,6 +45,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 
         when(event.action and MotionEvent.ACTION_MASK) {
             MotionEvent.ACTION_DOWN -> {
+                rollbackAnimation?.cancel()
                 startX = event.x
                 startY = event.y
                 parent.requestDisallowInterceptTouchEvent(true)
@@ -80,7 +84,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 //                if (translationY > quarterHeight) {
 //
 //                } else {
-                    playRollBackAnimation()
+                    playRollbackAnimation()
 //                }
 
                 parent.requestDisallowInterceptTouchEvent(false)
@@ -88,8 +92,9 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         }
     }
 
-    private fun playRollBackAnimation() {
-        SupportViewPropertyAnimator(this)
+    private fun playRollbackAnimation() {
+        rollbackAnimation?.cancel()
+        rollbackAnimation = SupportViewPropertyAnimator(this)
                 .setDuration(ANIMATION_DURATION_MS)
                 .setInterpolator(OvershootInterpolator2F)
                 .translationY(0f)
