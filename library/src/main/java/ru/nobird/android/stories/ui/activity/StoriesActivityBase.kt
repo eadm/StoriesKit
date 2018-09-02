@@ -11,4 +11,11 @@ abstract class StoriesActivityBase : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Log.d(javaClass.canonicalName, "$parent")
     }
+
+    override fun onPause() {
+        if (isFinishing) {
+            overridePendingTransition(0, 0)
+        }
+        super.onPause()
+    }
 }

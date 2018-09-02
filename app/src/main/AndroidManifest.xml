@@ -16,7 +16,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".StoriesActivity" />
+        <activity
+            android:name=".StoriesActivity"
+            android:theme="@style/StoryActivityTheme" />
     </application>
 
 </manifest>
