@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ru.nobird.android.stories.ui.custom.DissmissableLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/content"
+    android:layout_alignParentTop="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <FrameLayout
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/storiesPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#000fff" />
+        android:layout_height="match_parent" />
 </ru.nobird.android.stories.ui.custom.DissmissableLayout>

@@ -15,11 +15,12 @@ class DissmissableLayout
 constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
     companion object {
         private val MIN_DELTA = Resources.getSystem().displayMetrics.density * 16
-        private val OvershootInterpolator2F by lazy { OvershootInterpolator(2f) }
 
         private const val MIN_SCALE = 0.9f
         private const val ANIMATION_DURATION_MS = 500L
     }
+
+    private val overshootInterpolator by lazy { OvershootInterpolator(1.5f) }
 
     private val quarterHeight = Resources.getSystem().displayMetrics.heightPixels / 8
 
@@ -62,7 +63,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 intercepted =
                         intercepted ||
                         isOwnEvent ||
-                        dy > MIN_DELTA && ady > adx
+                        ady > MIN_DELTA && ady > adx
 
                 if (intercepted) {
                     translationY += dy
@@ -96,7 +97,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         rollbackAnimation?.cancel()
         rollbackAnimation = SupportViewPropertyAnimator(this)
                 .setDuration(ANIMATION_DURATION_MS)
-                .setInterpolator(OvershootInterpolator2F)
+                .setInterpolator(overshootInterpolator)
                 .translationY(0f)
                 .scaleX(1f)
                 .scaleY(1f)
