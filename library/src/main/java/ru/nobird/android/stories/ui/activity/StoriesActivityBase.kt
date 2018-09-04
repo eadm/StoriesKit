@@ -65,6 +65,7 @@ abstract class StoriesActivityBase : AppCompatActivity() {
         content.scaleY = scale
 
         content.visibility = View.VISIBLE
+        content.isEnabled = false
 
         SupportViewPropertyAnimator(content)
                 .setInterpolator(OvershootInterpolator(1.5f))
@@ -73,6 +74,11 @@ abstract class StoriesActivityBase : AppCompatActivity() {
                 .scaleY(1f)
                 .translationX(0f)
                 .translationY(0f)
+                .withEndAction (Runnable {
+                    content.pivotX = content.width / 2f
+                    content.pivotY = content.height / 2f
+                    content.isEnabled = true
+                })
                 .start()
     }
 

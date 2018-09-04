@@ -4,6 +4,7 @@ import android.animation.AnimatorSet
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.animation.OvershootInterpolator
@@ -29,6 +30,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     private var intercepted = false
 
     private var rollbackAnimation: AnimatorSet? = null
+
+    var onDissmissListener: OnDismissListener? = null
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
         processTouchEvent(event, false)
@@ -82,15 +85,25 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
             }
 
             MotionEvent.ACTION_UP -> {
-//                if (translationY > quarterHeight) {
-//
-//                } else {
+                if (translationY > quarterHeight) {
+                    if (onDissmissListener?.isNeedPlayExitAnimation() != true) {
+                        onDissmissListener?.onDissmissed()
+                    }
+                } else {
                     playRollbackAnimation()
-//                }
+                }
 
                 parent.requestDisallowInterceptTouchEvent(false)
             }
         }
+    }
+
+    fun playEnterAnimation(targetBounds: Rect) {
+
+    }
+
+    fun playExitAnimation(startBounds: Rect) {
+
     }
 
     private fun playRollbackAnimation() {
@@ -102,5 +115,10 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 .scaleX(1f)
                 .scaleY(1f)
                 .start()
+    }
+
+    abstract class OnDismissListener {
+        open fun isNeedPlayExitAnimation(): Boolean = false
+        open fun onDissmissed() = Unit
     }
 }
