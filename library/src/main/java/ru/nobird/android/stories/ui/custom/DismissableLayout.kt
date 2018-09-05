@@ -30,6 +30,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     private var startX = 0f
     private var startY = 0f
     private var intercepted = false
+    private var isCompleteMovement = false
 
     private var rollbackAnimation: AnimatorSet? = null
 
@@ -56,9 +57,12 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 startY = event.y
                 parent.requestDisallowInterceptTouchEvent(true)
                 intercepted = false
+                isCompleteMovement = true
             }
 
             MotionEvent.ACTION_MOVE -> {
+                if (!isCompleteMovement) return
+
                 val dx = event.x - startX
                 val dy = event.y - startY
 
@@ -84,6 +88,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 
                 scaleX = 1f
                 scaleY = 1f
+
+                isCompleteMovement = false
             }
 
             MotionEvent.ACTION_UP -> {
@@ -94,6 +100,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 }
 
                 parent.requestDisallowInterceptTouchEvent(false)
+                isCompleteMovement = false
             }
         }
     }

@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import kotlinx.android.synthetic.main.activity_stories.*
 import ru.nobird.android.stories.ui.adapter.StoriesPagerAdapter
-import ru.nobird.android.stories.ui.custom.DismissableLayout
 
 abstract class StoriesActivityBase : AppCompatActivity() {
     companion object {
