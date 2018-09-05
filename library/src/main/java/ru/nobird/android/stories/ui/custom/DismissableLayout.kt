@@ -34,7 +34,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 
     private var rollbackAnimation: AnimatorSet? = null
 
-    var onReady: (() -> Unit)? = null
     var onDismiss: (() -> Unit)? = null
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
@@ -106,7 +105,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         }
     }
 
-    fun playEnterAnimation(startBounds: Rect) {
+    fun playEnterAnimation(startBounds: Rect, onAnimationEnd: (() -> Unit)? = null) {
         isEnabled = false
 
         val offset = Point()
@@ -135,17 +134,13 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 .translationY(0f)
                 .withEndAction(Runnable {
                     isEnabled = true
+                    onAnimationEnd?.invoke()
                 })
                 .start()
     }
 
     fun playExitAnimation(targetBounds: Rect, onAnimationEnd: (() -> Unit)? = null) {
         isEnabled = false
-
-        val offset = intArrayOf(0, 0)
-        (parent as? View)?.getLocationOnScreen(offset)
-
-        targetBounds.offset(-offset[0], -offset[1])
 
         val scale = Math.min(targetBounds.width() / width.toFloat(), targetBounds.height() / height.toFloat())
 
