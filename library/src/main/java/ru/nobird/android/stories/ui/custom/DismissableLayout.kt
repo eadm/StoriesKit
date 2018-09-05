@@ -4,14 +4,16 @@ import android.animation.AnimatorSet
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.Point
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.View
 import android.view.animation.OvershootInterpolator
 import android.widget.FrameLayout
 import ru.nobird.android.stories.ui.animation.SupportViewPropertyAnimator
 
-class DissmissableLayout
+class DismissableLayout
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
     companion object {
@@ -31,7 +33,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 
     private var rollbackAnimation: AnimatorSet? = null
 
-    var onDissmissListener: OnDismissListener? = null
+    var onDismiss: (() -> Unit)? = null
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
         processTouchEvent(event, false)
@@ -47,7 +49,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     private fun processTouchEvent(event: MotionEvent, isOwnEvent: Boolean) {
         if (!isEnabled) return
 
-        when(event.action and MotionEvent.ACTION_MASK) {
+        when (event.action and MotionEvent.ACTION_MASK) {
             MotionEvent.ACTION_DOWN -> {
                 rollbackAnimation?.cancel()
                 startX = event.x
@@ -85,10 +87,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
             }
 
             MotionEvent.ACTION_UP -> {
-                if (translationY > quarterHeight) {
-                    if (onDissmissListener?.isNeedPlayExitAnimation() != true) {
-                        onDissmissListener?.onDissmissed()
-                    }
+                if (Math.abs(translationY) > quarterHeight) {
+                    onDismiss?.invoke()
                 } else {
                     playRollbackAnimation()
                 }
@@ -98,12 +98,54 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         }
     }
 
-    fun playEnterAnimation(targetBounds: Rect) {
+    fun playEnterAnimation(startBounds: Rect) {
+        isEnabled = false
 
+        val offset = Point()
+        val targetBounds = Rect()
+        getGlobalVisibleRect(targetBounds, offset)
+
+        startBounds.offset(-offset.x, -offset.y)
+        targetBounds.offset(-offset.x, -offset.y)
+
+        translationX = startBounds.left + startBounds.width() / 2 - pivotX
+        translationY = startBounds.top + startBounds.height() / 2 - pivotY
+
+        val scale = Math.min(startBounds.width().toFloat() / targetBounds.width(), startBounds.height().toFloat() / targetBounds.height())
+
+        scaleX = scale
+        scaleY = scale
+
+        visibility = View.VISIBLE
+
+        SupportViewPropertyAnimator(this)
+                .setInterpolator(overshootInterpolator)
+                .setDuration(ANIMATION_DURATION_MS)
+                .scaleX(1f)
+                .scaleY(1f)
+                .translationX(0f)
+                .translationY(0f)
+                .withEndAction(Runnable {
+                    isEnabled = true
+                })
+                .start()
     }
 
-    fun playExitAnimation(startBounds: Rect) {
+    fun playExitAnimation(targetBounds: Rect, onAnimationEnd: (() -> Unit)? = null) {
+        isEnabled = false
 
+        val scale = Math.min(targetBounds.width() / width.toFloat(), targetBounds.height() / height.toFloat())
+
+        SupportViewPropertyAnimator(this)
+                .setDuration(ANIMATION_DURATION_MS / 2)
+                .scaleX(scale)
+                .scaleY(scale)
+                .translationX(targetBounds.left + targetBounds.width() / 2 - pivotX)
+                .translationY(targetBounds.top + targetBounds.height() / 2 - pivotY)
+                .withEndAction(Runnable {
+                    onAnimationEnd?.invoke()
+                })
+                .start()
     }
 
     private fun playRollbackAnimation() {
@@ -115,10 +157,5 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 .scaleX(1f)
                 .scaleY(1f)
                 .start()
-    }
-
-    abstract class OnDismissListener {
-        open fun isNeedPlayExitAnimation(): Boolean = false
-        open fun onDissmissed() = Unit
     }
 }
