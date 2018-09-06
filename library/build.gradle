@@ -27,6 +27,7 @@ android {
 dependencies {
     implementation libraries.kotlin
     implementation libraries.appCompat
+    implementation libraries.ktx
     implementation libraries.viewPager
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])

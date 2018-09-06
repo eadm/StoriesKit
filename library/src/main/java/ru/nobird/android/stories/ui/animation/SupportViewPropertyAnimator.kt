@@ -7,12 +7,6 @@ class SupportViewPropertyAnimator(private val view: View) {
     private val animators = ArrayList<Animator>()
     private val set = AnimatorSet()
 
-    private var endAction: Runnable? = null
-
-    fun withEndAction(action: Runnable) = apply {
-        endAction = action
-    }
-
     fun setInterpolator(interpolator: TimeInterpolator) = apply {
         set.interpolator = interpolator
     }
@@ -51,11 +45,6 @@ class SupportViewPropertyAnimator(private val view: View) {
 
     fun start() = set.apply {
         playTogether(animators)
-        addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
-                endAction?.run()
-            }
-        })
         start()
     }
 }

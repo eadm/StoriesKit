@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.doOnPreDraw
 import androidx.viewpager.widget.ViewPager
 import kotlinx.android.synthetic.main.activity_stories.*
 import ru.nobird.android.stories.ui.adapter.StoriesPagerAdapter
@@ -39,14 +40,9 @@ abstract class StoriesActivityBase : AppCompatActivity() {
         content.visibility = View.INVISIBLE
 
         if (savedInstanceState == null) {
-            val preDrawListener = object : ViewTreeObserver.OnPreDrawListener {
-                override fun onPreDraw(): Boolean {
-                    content.viewTreeObserver.removeOnPreDrawListener(this)
-                    runEnterAnimation()
-                    return true
-                }
+            content.doOnPreDraw {
+                runEnterAnimation()
             }
-            content.viewTreeObserver.addOnPreDrawListener(preDrawListener)
         } else {
             content.visibility = View.VISIBLE
         }

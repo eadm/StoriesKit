@@ -11,6 +11,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.animation.OvershootInterpolator
 import android.widget.FrameLayout
+import androidx.core.animation.doOnEnd
 import ru.nobird.android.stories.ui.animation.SupportViewPropertyAnimator
 
 class DismissableLayout
@@ -132,11 +133,11 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 .scaleY(1f)
                 .translationX(0f)
                 .translationY(0f)
-                .withEndAction(Runnable {
+                .start()
+                .doOnEnd {
                     isEnabled = true
                     onAnimationEnd?.invoke()
-                })
-                .start()
+                }
     }
 
     fun playExitAnimation(targetBounds: Rect, onAnimationEnd: (() -> Unit)? = null) {
@@ -150,10 +151,10 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 .scaleY(scale)
                 .translationX(targetBounds.left + targetBounds.width() / 2 - pivotX)
                 .translationY(targetBounds.top + targetBounds.height() / 2 - pivotY)
-                .withEndAction(Runnable {
-                    onAnimationEnd?.invoke()
-                })
                 .start()
+                .doOnEnd {
+                    onAnimationEnd?.invoke()
+                }
     }
 
     private fun playRollbackAnimation() {

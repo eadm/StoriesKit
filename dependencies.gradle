@@ -22,5 +22,6 @@ ext.libraries = [
         kotlin               : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin",
 
         appCompat            : "androidx.appcompat:appcompat:$versions.androidx",
+        ktx                  : "androidx.core:core-ktx:$versions.androidx",
         viewPager            : "androidx.viewpager:viewpager:$versions.androidx"
 ]
