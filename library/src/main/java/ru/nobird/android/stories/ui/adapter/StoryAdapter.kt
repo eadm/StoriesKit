@@ -8,8 +8,8 @@ import androidx.viewpager.widget.PagerAdapter
 import ru.nobird.android.stories.model.Story
 import ru.nobird.android.stories.ui.delegate.StoryPartViewDelegate
 
-class StoryPartPagerAdapter(
-        private val story: Story,
+class StoryAdapter(
+        internal val story: Story,
         private val storyPartDelegates: List<StoryPartViewDelegate>
 ): PagerAdapter() {
     override fun isViewFromObject(view: View, `object`: Any): Boolean =
