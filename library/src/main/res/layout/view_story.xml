@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ru.nobird.android.stories.ui.custom.StoryViewPager
         android:id="@+id/storyViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <ru.nobird.android.stories.ui.custom.StoryProgressView
+    <ru.nobird.android.stories.ui.custom.StoryProgressBar
         android:id="@+id/storyProgress"
+        app:radius="1dp"
+        app:gap="2dp"
         android:layout_margin="8dp"
         android:layout_width="match_parent"
         android:layout_height="2dp" />
