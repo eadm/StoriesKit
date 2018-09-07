@@ -9,10 +9,8 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.ColorInt
-import androidx.core.animation.doOnEnd
 import androidx.core.content.res.use
 import ru.nobird.android.stories.R
-import kotlin.properties.Delegates
 
 class PartialProgressBar
 @JvmOverloads
@@ -20,6 +18,11 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     companion object {
         const val DEFAULT_GAP_DP = 2f
         const val DEFAULT_RADIUS_DP = 1f
+
+        /**
+         * Constant represents minimal time interval to consider prev item click
+         */
+        private const val PREV_CLICK_THRESHOLD_MS = 300L
     }
 
     var gap: Float = Resources.getSystem().displayMetrics.density * DEFAULT_GAP_DP
@@ -41,9 +44,11 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 
     var progressListener: PartialProgressListener? = null
 
-    var parts: LongArray by Delegates.observable(longArrayOf()) {_, _, _ ->
-        currentPart = 0
-    }
+    var parts: LongArray = longArrayOf()
+        set(value) {
+            field = value
+            currentPart = 0
+        }
 
     var currentPart: Int = 0
         set(value) {
@@ -72,12 +77,12 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     private var animator: ValueAnimator? = null
 
     init {
-        context.obtainStyledAttributes(attrs, R.styleable.StoryProgressBar).use {
-            progressBackgroundColor = it.getColor(R.styleable.StoryProgressBar_progressBackgroundColor, progressBackgroundColor)
-            progressForegroundColor = it.getColor(R.styleable.StoryProgressBar_progressForegroundColor, progressForegroundColor)
+        context.obtainStyledAttributes(attrs, R.styleable.PartialProgressBar).use {
+            progressBackgroundColor = it.getColor(R.styleable.PartialProgressBar_progressBackgroundColor, progressBackgroundColor)
+            progressForegroundColor = it.getColor(R.styleable.PartialProgressBar_progressForegroundColor, progressForegroundColor)
 
-            gap = it.getDimension(R.styleable.StoryProgressBar_gap, gap)
-            radius = it.getDimension(R.styleable.StoryProgressBar_radius, radius)
+            gap = it.getDimension(R.styleable.PartialProgressBar_gap, gap)
+            radius = it.getDimension(R.styleable.PartialProgressBar_radius, radius)
         }
     }
 
@@ -108,7 +113,13 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     }
 
     fun prev() {
-        currentPart--
+        val currentItemTime = currentPartProgress * parts.getOrElse(currentPart) { 0 }
+        currentPart = if (currentItemTime > PREV_CLICK_THRESHOLD_MS) {
+            currentPart
+        } else {
+            currentPart - 1
+        }
+
         progressListener?.let {
             if (currentPart < 0) {
                 it.onPrev()
@@ -141,14 +152,16 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     }
 
     private fun initAnimator(from: Float = 0f) {
+        animator?.cancel()
         currentPartProgress = from
         animator = parts.getOrNull(currentPart)?.let { partDuration ->
              ValueAnimator.ofFloat(from, 1f).apply {
                  addUpdateListener {
-                     currentPartProgress = animatedValue as Float
-                 }
-                 doOnEnd {
-                     next()
+                     val value = animatedValue as Float
+                     currentPartProgress = value
+                     if (value == 1f) {
+                         next()
+                     }
                  }
                  duration = partDuration
             }
