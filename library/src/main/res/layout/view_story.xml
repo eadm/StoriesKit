@@ -10,7 +10,7 @@
 
     <ru.nobird.android.stories.ui.custom.PartialProgressBar
         android:id="@+id/storyProgress"
-        app:radius="1dp"
+        app:radius="1.5dp"
         app:gap="4dp"
         android:layout_margin="8dp"
         android:layout_width="match_parent"

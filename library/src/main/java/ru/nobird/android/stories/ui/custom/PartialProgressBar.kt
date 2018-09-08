@@ -104,11 +104,14 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 
             val primaryPaint = if (i >= currentPart) progressBackgroundPaint else progressForegroundPaint
             canvas.drawRoundRect(rect, radius, radius, primaryPaint)
+        }
 
-            if (i == currentPart) {
-                rect.right = rect.left + elementWidth * currentPartProgress
-                canvas.drawRoundRect(rect, radius, radius, progressForegroundPaint)
-            }
+        if (currentPart in 0 until totalParts) {
+            rect.left = (elementWidth + gap) * currentPart
+            rect.right = rect.left + elementWidth * currentPartProgress
+            canvas.clipRect(rect) // clip current part progress bar
+            rect.right = rect.left + elementWidth
+            canvas.drawRoundRect(rect, radius, radius, progressForegroundPaint)
         }
     }
 
