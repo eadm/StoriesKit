@@ -22,7 +22,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         /**
          * Constant represents minimal time interval to consider prev item click
          */
-        private const val PREV_CLICK_THRESHOLD_MS = 300L
+        private const val PREV_CLICK_THRESHOLD_MS = 500L
     }
 
     var gap: Float = Resources.getSystem().displayMetrics.density * DEFAULT_GAP_DP
@@ -117,32 +117,33 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 
     fun prev() {
         val currentItemTime = currentPartProgress * parts.getOrElse(currentPart) { 0 }
-        currentPart = if (currentItemTime > PREV_CLICK_THRESHOLD_MS) {
+        val part = if (currentItemTime > PREV_CLICK_THRESHOLD_MS) {
             currentPart
         } else {
             currentPart - 1
         }
 
-        progressListener?.let {
-            if (currentPart < 0) {
-                it.onPrev()
-            } else {
-                it.onPositionChanged(currentPart)
-            }
+        if (part < 0) {
+            currentPart = 0
+            progressListener?.onPrev()
+        } else {
+            currentPart = part
+            progressListener?.onPositionChanged(part)
+            resume()
         }
-        resume()
+
     }
 
     fun next() {
-        currentPart++
-        progressListener?.let {
-            if (currentPart == parts.size) {
-                it.onNext()
-            } else {
-                it.onPositionChanged(currentPart)
-            }
+        val part = currentPart + 1
+        if (part >= parts.size) {
+            currentPart = parts.size - 1
+            progressListener?.onNext()
+        } else {
+            currentPart = part
+            progressListener?.onPositionChanged(part)
+            resume()
         }
-        resume()
     }
 
     fun pause() {
