@@ -2,12 +2,12 @@ package ru.nobird.android.stories.ui.custom
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Resources
 import android.util.AttributeSet
-import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.ViewConfiguration
 import android.widget.FrameLayout
-import androidx.core.view.GestureDetectorCompat
 import kotlinx.android.synthetic.main.view_story.view.*
 import ru.nobird.android.stories.R
 import ru.nobird.android.stories.model.Story
@@ -17,10 +17,15 @@ import ru.nobird.android.stories.ui.adapter.StoryAdapter
 class StoryView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
+    companion object {
+        private val TAP_TIMEOUT_MS = ViewConfiguration.getTapTimeout()
+        private val TOUCH_SLOP_SQUARE_PX = (8 * Resources.getSystem().displayMetrics.density).let { it * it }
+    }
+
     private val progress: PartialProgressBar
     private val pager: StoryViewPager
 
-    private val gestureDetector: GestureDetectorCompat
+    private lateinit var lastDownEvent: MotionEvent
 
     var progressListener: StoryProgressListener? = null
 
@@ -41,17 +46,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         LayoutInflater.from(context).inflate(R.layout.view_story, this, true)
         progress = storyProgress
         pager = storyViewPager
-
-        gestureDetector = GestureDetectorCompat(context, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onSingleTapUp(event: MotionEvent): Boolean {
-                if (event.x > width / 2) {
-                    progress.next()
-                } else {
-                    progress.prev()
-                }
-                return true
-            }
-        })
 
         progress.progressListener = object : PartialProgressBar.PartialProgressListener {
             override fun onPositionChanged(position: Int) {
@@ -81,13 +75,26 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     }
 
     private fun processTouchEvent(event: MotionEvent) {
-        gestureDetector.onTouchEvent(event)
         when(event.action and MotionEvent.ACTION_MASK) {
-            MotionEvent.ACTION_DOWN ->
+            MotionEvent.ACTION_DOWN -> {
+                lastDownEvent = MotionEvent.obtain(event)
                 progress.pause()
+            }
 
-            MotionEvent.ACTION_UP ->
-                progress.resume()
+            MotionEvent.ACTION_UP -> {
+                val dx = event.x - lastDownEvent.x
+                val dy = event.y - lastDownEvent.y
+                val dt = event.eventTime - lastDownEvent.eventTime
+                if (dx * dx + dy * dy < TOUCH_SLOP_SQUARE_PX && dt < TAP_TIMEOUT_MS) {
+                    if (event.x > width / 2) {
+                        progress.next()
+                    } else {
+                        progress.prev()
+                    }
+                } else {
+                    progress.resume()
+                }
+            }
         }
     }
 
