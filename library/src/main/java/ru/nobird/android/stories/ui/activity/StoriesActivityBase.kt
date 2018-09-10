@@ -13,21 +13,18 @@ import ru.nobird.android.stories.transition.SharedTransitionsManager
 import ru.nobird.android.stories.transition.SharedTransitionIntentBuilder
 import ru.nobird.android.stories.ui.adapter.StoriesPagerAdapter
 import ru.nobird.android.stories.ui.custom.StoryView
-import ru.nobird.android.stories.ui.delegate.SharedTransitionContainerDelegate
 
 abstract class StoriesActivityBase : AppCompatActivity() {
     private var position = 0
 
-    private lateinit var sharedTransitionDelegate: SharedTransitionContainerDelegate
+    private lateinit var key: String
 
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val stories: List<Story> = intent.getParcelableArrayListExtra(SharedTransitionIntentBuilder.EXTRA_STORIES) ?: emptyList()
-        val key = intent.getStringExtra(SharedTransitionIntentBuilder.EXTRA_KEY) ?: ""
-
-        sharedTransitionDelegate = SharedTransitionsManager.getTransitionDelegate(key)!!
+        key = intent.getStringExtra(SharedTransitionIntentBuilder.EXTRA_KEY) ?: ""
 
         storiesPager.adapter = StoriesPagerAdapter(stories, object : StoryView.StoryProgressListener {
             override fun onNext() {
@@ -43,7 +40,7 @@ abstract class StoriesActivityBase : AppCompatActivity() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {
-                sharedTransitionDelegate.onPositionChanged(position)
+                SharedTransitionsManager.getTransitionDelegate(key)?.onPositionChanged(position)
                 this@StoriesActivityBase.position = position
             }
         })
@@ -59,11 +56,11 @@ abstract class StoriesActivityBase : AppCompatActivity() {
         }
 
         content.onDismiss = {
-            val view = sharedTransitionDelegate.getSharedView(position)
+            val view = SharedTransitionsManager.getTransitionDelegate(key)?.getSharedView(position)
             val bounds = Rect()
-            view.getGlobalVisibleRect(bounds)
+            view?.getGlobalVisibleRect(bounds)
             content.playExitAnimation(bounds) {
-                view.visibility = View.VISIBLE
+                view?.visibility = View.VISIBLE
                 finish()
             }
         }
@@ -75,7 +72,7 @@ abstract class StoriesActivityBase : AppCompatActivity() {
         }
 
         storiesPager.currentItem = position
-        sharedTransitionDelegate.onPositionChanged(position)
+        SharedTransitionsManager.getTransitionDelegate(key)?.onPositionChanged(position)
     }
 
     private fun runEnterAnimation() {
@@ -83,7 +80,7 @@ abstract class StoriesActivityBase : AppCompatActivity() {
     }
 
     private fun getViewBounds(position: Int) = Rect().apply {
-        sharedTransitionDelegate.getSharedView(position).getGlobalVisibleRect(this)
+        SharedTransitionsManager.getTransitionDelegate(key)?.getSharedView(position)?.getGlobalVisibleRect(this)
     }
 
     override fun onPause() {
