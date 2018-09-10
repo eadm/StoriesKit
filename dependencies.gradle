@@ -10,12 +10,15 @@ ext.versions = [
         androidGradlePlugin  : '3.1.4',
         kotlin               : '1.1.61',
 
-        androidx             : '1.0.0-rc02'
+        androidx             : '1.0.0-rc02',
+
+        dexcount             : '0.8.2'
 ]
 
 ext.gradlePlugins = [
         android       : "com.android.tools.build:gradle:$versions.androidGradlePlugin",
-        kotlin        : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
+        kotlin        : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
+        dexcount      : "com.getkeepsafe.dexcount:dexcount-gradle-plugin:$versions.dexcount"
 ]
 
 ext.libraries = [
