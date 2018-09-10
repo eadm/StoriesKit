@@ -16,4 +16,7 @@ constructor(context: Context, attrs: AttributeSet? = null) : ViewPager(context, 
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean =
             false
+
+    override fun canScrollHorizontally(direction: Int): Boolean =
+            false
 }
