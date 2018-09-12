@@ -13,6 +13,7 @@ import ru.nobird.android.stories.transition.SharedTransitionsManager
 import ru.nobird.android.stories.transition.SharedTransitionIntentBuilder
 import ru.nobird.android.stories.ui.adapter.StoriesPagerAdapter
 import ru.nobird.android.stories.ui.custom.StoryView
+import ru.nobird.android.stories.ui.delegate.PlainStoryPartViewDelegate
 
 abstract class StoriesActivityBase : AppCompatActivity() {
     private var position = 0
@@ -23,7 +24,8 @@ abstract class StoriesActivityBase : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val stories: List<Story> = intent.getParcelableArrayListExtra(SharedTransitionIntentBuilder.EXTRA_STORIES) ?: emptyList()
+        val stories: List<Story> = intent.getParcelableArrayListExtra(SharedTransitionIntentBuilder.EXTRA_STORIES)
+                ?: emptyList()
         key = intent.getStringExtra(SharedTransitionIntentBuilder.EXTRA_KEY) ?: ""
 
         storiesPager.adapter = StoriesPagerAdapter(stories, object : StoryView.StoryProgressListener {
@@ -34,7 +36,7 @@ abstract class StoriesActivityBase : AppCompatActivity() {
             override fun onPrev() {
                 storiesPager.currentItem--
             }
-        })
+        }, listOf(PlainStoryPartViewDelegate()))
         storiesPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
@@ -42,6 +44,7 @@ abstract class StoriesActivityBase : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 SharedTransitionsManager.getTransitionDelegate(key)?.onPositionChanged(position)
                 this@StoriesActivityBase.position = position
+                storiesPager.findViewWithTag<StoryView>(position)?.resume()
             }
         })
 
@@ -56,10 +59,10 @@ abstract class StoriesActivityBase : AppCompatActivity() {
         }
 
         content.onDismiss = {
-            val view = SharedTransitionsManager.getTransitionDelegate(key)?.getSharedView(position)
+            val view = SharedTransitionsManager.getTransitionDelegate(key)?.getSharedView(position)!!
             val bounds = Rect()
             view?.getGlobalVisibleRect(bounds)
-            content.playExitAnimation(bounds) {
+            content.playExitAnimation(view) {
                 view?.visibility = View.VISIBLE
                 finish()
             }
@@ -71,16 +74,13 @@ abstract class StoriesActivityBase : AppCompatActivity() {
             storiesPager.currentItem
         }
 
-        storiesPager.currentItem = position
+        storiesPager.setCurrentItem(position, false)
         SharedTransitionsManager.getTransitionDelegate(key)?.onPositionChanged(position)
     }
 
     private fun runEnterAnimation() {
-        content.playEnterAnimation(getViewBounds(position))
-    }
-
-    private fun getViewBounds(position: Int) = Rect().apply {
-        SharedTransitionsManager.getTransitionDelegate(key)?.getSharedView(position)?.getGlobalVisibleRect(this)
+        val view = SharedTransitionsManager.getTransitionDelegate(key)?.getSharedView(position) ?: return
+        content.playEnterAnimation(view)
     }
 
     override fun onPause() {

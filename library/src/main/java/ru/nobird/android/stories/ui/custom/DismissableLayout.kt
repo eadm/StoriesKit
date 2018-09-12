@@ -4,6 +4,8 @@ import android.animation.AnimatorSet
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Point
 import android.graphics.Rect
 import android.util.AttributeSet
@@ -11,7 +13,9 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.animation.OvershootInterpolator
 import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.core.animation.doOnEnd
+import ru.nobird.android.stories.R
 import ru.nobird.android.stories.ui.animation.SupportViewPropertyAnimator
 
 class DismissableLayout
@@ -22,6 +26,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 
         private const val MIN_SCALE = 0.9f
         private const val ANIMATION_DURATION_MS = 500L
+        private const val FADE_ANIMATION_DURATION_MS = ANIMATION_DURATION_MS / 5
     }
 
     private val overshootInterpolator by lazy { OvershootInterpolator(1.5f) }
@@ -36,6 +41,18 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     private var rollbackAnimation: AnimatorSet? = null
 
     var onDismiss: (() -> Unit)? = null
+
+    private val stubView = ImageView(context).apply {
+        layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+        scaleType = ImageView.ScaleType.FIT_XY
+        visibility = View.GONE
+    }
+
+    private val content: View by lazy { findViewById<View>(R.id.storiesPager) }
+
+    init {
+        addView(stubView)
+    }
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
         processTouchEvent(event, false)
@@ -106,8 +123,13 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         }
     }
 
-    fun playEnterAnimation(startBounds: Rect, onAnimationEnd: (() -> Unit)? = null) {
+    fun playEnterAnimation(startView: View, onAnimationEnd: (() -> Unit)? = null) {
         isEnabled = false
+
+        setStabView(startView)
+
+        val startBounds = Rect()
+        startView.getGlobalVisibleRect(startBounds)
 
         val offset = Point()
         val targetBounds = Rect()
@@ -119,12 +141,26 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         translationX = startBounds.left + startBounds.width() / 2 - pivotX
         translationY = startBounds.top + startBounds.height() / 2 - pivotY
 
-        val scale = Math.min(startBounds.width().toFloat() / targetBounds.width(), startBounds.height().toFloat() / targetBounds.height())
-
-        scaleX = scale
-        scaleY = scale
+        scaleX = startBounds.width().toFloat() / targetBounds.width()
+        scaleY = startBounds.height().toFloat() / targetBounds.height()
 
         visibility = View.VISIBLE
+
+        stubView.alpha = 1f
+        stubView.visibility = View.VISIBLE
+        SupportViewPropertyAnimator(stubView)
+                .setDuration(FADE_ANIMATION_DURATION_MS)
+                .alpha(0f)
+                .start()
+                .doOnEnd {
+                    stubView.visibility = View.GONE
+                }
+
+        content.alpha = 0f
+        content.animate()
+                .setDuration(FADE_ANIMATION_DURATION_MS)
+                .alpha(1f)
+                .start()
 
         SupportViewPropertyAnimator(this)
                 .setInterpolator(overshootInterpolator)
@@ -140,15 +176,36 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 }
     }
 
-    fun playExitAnimation(targetBounds: Rect, onAnimationEnd: (() -> Unit)? = null) {
+    fun playExitAnimation(targetView: View, onAnimationEnd: (() -> Unit)? = null) {
         isEnabled = false
 
-        val scale = Math.min(targetBounds.width() / width.toFloat(), targetBounds.height() / height.toFloat())
+        setStabView(targetView)
+
+        val targetBounds = Rect()
+        targetView.getGlobalVisibleRect(targetBounds)
+
+        stubView.alpha = 0f
+        stubView.visibility = View.VISIBLE
+        SupportViewPropertyAnimator(stubView)
+                .setStartDelay(ANIMATION_DURATION_MS - FADE_ANIMATION_DURATION_MS)
+                .setDuration(FADE_ANIMATION_DURATION_MS)
+                .alpha(1f)
+                .start()
+                .doOnEnd {
+                    stubView.visibility = View.GONE
+                }
+
+        content.alpha = 1f
+        content.animate()
+                .setStartDelay(ANIMATION_DURATION_MS - FADE_ANIMATION_DURATION_MS)
+                .setDuration(FADE_ANIMATION_DURATION_MS)
+                .alpha(0f)
+                .start()
 
         SupportViewPropertyAnimator(this)
                 .setDuration(ANIMATION_DURATION_MS / 2)
-                .scaleX(scale)
-                .scaleY(scale)
+                .scaleX(targetBounds.width() / width.toFloat())
+                .scaleY(targetBounds.height() / height.toFloat())
                 .translationX(targetBounds.left + targetBounds.width() / 2 - pivotX)
                 .translationY(targetBounds.top + targetBounds.height() / 2 - pivotY)
                 .start()
@@ -166,5 +223,12 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 .scaleX(1f)
                 .scaleY(1f)
                 .start()
+    }
+
+    private fun setStabView(source: View) {
+        val bitmap = Bitmap.createBitmap(source.width, source.height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        source.draw(canvas)
+        stubView.setImageBitmap(bitmap)
     }
 }
