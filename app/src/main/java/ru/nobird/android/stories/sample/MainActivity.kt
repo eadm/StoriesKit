@@ -3,7 +3,7 @@ package ru.nobird.android.stories.sample
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import androidx.core.graphics.toColorInt
+import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.nobird.android.stories.model.PlainStoryPart
 import ru.nobird.android.stories.model.Story
@@ -14,14 +14,22 @@ import ru.nobird.android.stories.ui.delegate.SharedTransitionContainerDelegate
 class MainActivity : AppCompatActivity() {
     companion object {
         val stories = arrayListOf(
-                Story(listOf(
-                        PlainStoryPart(duration = 15000, cover = "#FF233D4D"),
-                        PlainStoryPart(duration = 15000, cover = "#FFFE7F2D")
-                )),
-                Story(listOf(
-                        PlainStoryPart(duration = 15000, cover = "#FFA1C181"),
-                        PlainStoryPart(duration = 15000, cover = "#FF579C87")
-                ))
+                Story(
+                        "Story 1",
+                        "https://picsum.photos/1000/2000?image=992",
+                        listOf(
+                                PlainStoryPart(duration = 15000, cover = "#FF233D4D"),
+                                PlainStoryPart(duration = 15000, cover = "#FFFE7F2D")
+                        )
+                ),
+                Story(
+                        "Story 2",
+                        "https://picsum.photos/1000/2000?image=977",
+                        listOf(
+                                PlainStoryPart(duration = 15000, cover = "#FFA1C181"),
+                                PlainStoryPart(duration = 15000, cover = "#FF579C87")
+                        )
+                )
         )
 
         private const val SCREEN_KEY = "main_screen"
@@ -31,41 +39,27 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        actionButton1.setBackgroundColor(stories[0].parts[0].cover.toColorInt())
-        actionButton2.setBackgroundColor(stories[1].parts[0].cover.toColorInt())
-
-        actionButton1.setOnClickListener {
+        val adapter = StoriesAdapter(stories) { position, _ ->
             startActivity(SharedTransitionIntentBuilder.createIntent(
-                    this, StoriesActivity::class.java, SCREEN_KEY, 0, stories
+                    this, StoriesActivity::class.java, SCREEN_KEY, position, stories
             ))
         }
 
-        actionButton2.setOnClickListener {
-            startActivity(SharedTransitionIntentBuilder.createIntent(
-                    this, StoriesActivity::class.java, SCREEN_KEY, 1, stories
-            ))
-        }
+        storiesRecycler.adapter = adapter
+        storiesRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
     }
 
     override fun onStart() {
         super.onStart()
         SharedTransitionsManager.registerTransitionDelegate(SCREEN_KEY, object : SharedTransitionContainerDelegate {
             override fun getSharedView(position: Int): View {
-                return if (position == 0) {
-                    actionButton1
-                } else {
-                    actionButton2
-                }
+                return (storiesRecycler.findViewHolderForAdapterPosition(position) as? StoriesAdapter.ViewHolder)?.itemView!!
             }
 
             override fun onPositionChanged(position: Int) {
-                if (position == 0) {
-                    actionButton1.visibility = View.GONE
-                    actionButton2.visibility = View.VISIBLE
-                } else {
-                    actionButton1.visibility = View.VISIBLE
-                    actionButton2.visibility = View.GONE
-                }
+                storiesRecycler.layoutManager?.scrollToPosition(position)
+                (storiesRecycler.adapter as StoriesAdapter).selected = position
+                // adapter hide
             }
         })
     }

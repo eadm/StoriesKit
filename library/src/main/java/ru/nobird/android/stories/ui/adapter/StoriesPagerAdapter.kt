@@ -6,11 +6,12 @@ import androidx.core.view.plusAssign
 import androidx.viewpager.widget.PagerAdapter
 import ru.nobird.android.stories.model.Story
 import ru.nobird.android.stories.ui.custom.StoryView
-import ru.nobird.android.stories.ui.delegate.PlainStoryPartViewDelegate
+import ru.nobird.android.stories.ui.delegate.StoryPartViewDelegate
 
 class StoriesPagerAdapter(
         private val stories: List<Story>,
-        private val listener: StoryView.StoryProgressListener
+        private val listener: StoryView.StoryProgressListener,
+        private val delegates: List<StoryPartViewDelegate>
 ) : PagerAdapter() {
     override fun isViewFromObject(view: View, `object`: Any): Boolean =
             view == `object`
@@ -20,12 +21,12 @@ class StoriesPagerAdapter(
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val view = StoryView(container.context)
+        view.tag = position
 
         val story = stories[position]
 
         view.progressListener = listener
-        view.adapter = StoryAdapter(story, listOf(PlainStoryPartViewDelegate()))
-        view.resume()
+        view.adapter = StoryAdapter(story, delegates)
 
         container += view
         return view
