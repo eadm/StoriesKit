@@ -1,4 +1,4 @@
-package ru.nobird.android.stories.ui.adapter
+package ru.nobird.android.stories.sample.ui.adapter
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
