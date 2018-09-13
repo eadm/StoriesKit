@@ -18,16 +18,16 @@ class MainActivity : AppCompatActivity() {
                         "Story 1",
                         "https://picsum.photos/1000/2000?image=992",
                         listOf(
-                                PlainStoryPart(duration = 15000, cover = "#FF233D4D"),
-                                PlainStoryPart(duration = 15000, cover = "#FFFE7F2D")
+                                PlainStoryPart(duration = 15000, cover = "https://picsum.photos/1000/2000?image=992"),
+                                PlainStoryPart(duration = 15000, cover = "https://picsum.photos/1000/2000?image=977")
                         )
                 ),
                 Story(
                         "Story 2",
                         "https://picsum.photos/1000/2000?image=977",
                         listOf(
-                                PlainStoryPart(duration = 15000, cover = "#FFA1C181"),
-                                PlainStoryPart(duration = 15000, cover = "#FF579C87")
+                                PlainStoryPart(duration = 15000, cover = "https://picsum.photos/1000/2000?image=977"),
+                                PlainStoryPart(duration = 15000, cover = "https://picsum.photos/1000/2000?image=992")
                         )
                 )
         )

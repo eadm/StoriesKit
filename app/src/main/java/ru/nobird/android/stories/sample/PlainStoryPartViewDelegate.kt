@@ -1,17 +1,24 @@
 package ru.nobird.android.stories.sample
 
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.graphics.toColorInt
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import kotlinx.android.synthetic.main.story_part_plain.view.*
 import ru.nobird.android.stories.model.PlainStoryPart
 import ru.nobird.android.stories.model.StoryPart
 import ru.nobird.android.stories.ui.delegate.StoryPartViewDelegate
 
 class PlainStoryPartViewDelegate : StoryPartViewDelegate() {
     override fun onBindView(container: ViewGroup, part: StoryPart): View =
-            View(container.context).apply {
-                layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                setBackgroundColor((part as PlainStoryPart).cover.toColorInt())
+            LayoutInflater.from(container.context).inflate(R.layout.story_part_plain, container, false).apply {
+                part as PlainStoryPart
+
+                Glide.with(cover)
+                        .load(part.cover)
+                        .apply(RequestOptions.centerCropTransform())
+                        .into(cover)
             }
 
     override fun isForViewType(part: StoryPart): Boolean =
