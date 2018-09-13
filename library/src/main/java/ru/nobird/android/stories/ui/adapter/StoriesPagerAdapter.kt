@@ -19,18 +19,13 @@ class StoriesPagerAdapter(
     override fun getCount(): Int =
             stories.size
 
-    override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val view = StoryView(container.context)
-        view.tag = position
-
-        val story = stories[position]
-
-        view.progressListener = listener
-        view.adapter = StoryAdapter(story, delegates)
-
-        container += view
-        return view
-    }
+    override fun instantiateItem(container: ViewGroup, position: Int) =
+            StoryView(container.context).apply {
+                tag = position
+                progressListener = listener
+                adapter = StoryAdapter(stories[position], delegates)
+                container += this
+            }
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
         container -= `object` as View

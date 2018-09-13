@@ -1,7 +1,8 @@
-package ru.nobird.android.stories.model
+package ru.nobird.android.stories.sample.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import ru.nobird.android.stories.model.StoryPart
 
 class PlainStoryPart(
         duration: Long,

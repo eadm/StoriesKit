@@ -21,13 +21,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
 }
 
 dependencies {
     implementation libraries.kotlin
     implementation libraries.ktx
     implementation libraries.viewPager
-
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
 }

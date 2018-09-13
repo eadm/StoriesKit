@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.story_part_plain.view.*
-import ru.nobird.android.stories.model.PlainStoryPart
+import ru.nobird.android.stories.sample.model.PlainStoryPart
 import ru.nobird.android.stories.model.StoryPart
 import ru.nobird.android.stories.sample.R
 import ru.nobird.android.stories.ui.delegate.StoryPartViewDelegate

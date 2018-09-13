@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
-import ru.nobird.android.stories.model.PlainStoryPart
+import ru.nobird.android.stories.sample.model.PlainStoryPart
 import ru.nobird.android.stories.model.Story
 import ru.nobird.android.stories.sample.R
 import ru.nobird.android.stories.sample.ui.adapter.StoriesAdapter

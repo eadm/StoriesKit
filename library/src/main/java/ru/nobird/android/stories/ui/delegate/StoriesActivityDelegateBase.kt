@@ -32,17 +32,7 @@ abstract class StoriesActivityDelegateBase(
         initStoriesPager()
 
         dismissableLayout.content = storiesViewPager
-        dismissableLayout.onDismiss = {
-            val view = SharedTransitionsManager.getTransitionDelegate(key)?.getSharedView(storiesViewPager.currentItem)
-            if (view == null) {
-                activity.finish()
-            } else {
-                dismissableLayout.playExitAnimation(view) {
-                    SharedTransitionsManager.getTransitionDelegate(key)?.onPositionChanged(-1)
-                    activity.finish()
-                }
-            }
-        }
+        dismissableLayout.onDismiss = ::finish
 
         val sharedTransitionDelegate = SharedTransitionsManager.getTransitionDelegate(key)
 
@@ -65,6 +55,9 @@ abstract class StoriesActivityDelegateBase(
     private fun initStoriesPager() {
         storiesViewPager.adapter = StoriesPagerAdapter(stories, storyPartDelegates, object : StoryView.StoryProgressListener {
             override fun onNext() {
+                if (storiesViewPager.currentItem == (storiesViewPager.adapter?.count ?: 0) - 1) {
+                    finish()
+                }
                 storiesViewPager.currentItem++
             }
 
@@ -87,6 +80,18 @@ abstract class StoriesActivityDelegateBase(
     fun onPause() {
         if (activity.isFinishing) {
             activity.overridePendingTransition(0, 0)
+        }
+    }
+
+    protected open fun finish() {
+        val view = SharedTransitionsManager.getTransitionDelegate(key)?.getSharedView(storiesViewPager.currentItem)
+        if (view == null) {
+            activity.finish()
+        } else {
+            dismissableLayout.playExitAnimation(view) {
+                SharedTransitionsManager.getTransitionDelegate(key)?.onPositionChanged(-1)
+                activity.finish()
+            }
         }
     }
 }
