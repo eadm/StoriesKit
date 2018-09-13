@@ -1,4 +1,4 @@
-package ru.nobird.android.stories.sample
+package ru.nobird.android.stories.sample.ui.delegate.part
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +8,7 @@ import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.story_part_plain.view.*
 import ru.nobird.android.stories.model.PlainStoryPart
 import ru.nobird.android.stories.model.StoryPart
+import ru.nobird.android.stories.sample.R
 import ru.nobird.android.stories.ui.delegate.StoryPartViewDelegate
 
 class PlainStoryPartViewDelegate : StoryPartViewDelegate() {

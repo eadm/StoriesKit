@@ -1,4 +1,4 @@
-package ru.nobird.android.stories.sample
+package ru.nobird.android.stories.sample.ui.adapter
 
 import android.content.res.Resources
 import android.view.LayoutInflater
@@ -9,6 +9,8 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions.centerCropTransform
 import ru.nobird.android.stories.model.Story
+import ru.nobird.android.stories.sample.R
+import ru.nobird.android.stories.sample.ui.target.RoundedBitmapImageViewTarget
 import ru.nobird.android.stories.ui.adapter.StoriesRecyclerViewAdapter
 import kotlin.properties.Delegates
 

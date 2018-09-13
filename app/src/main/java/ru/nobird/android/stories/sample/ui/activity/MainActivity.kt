@@ -1,4 +1,4 @@
-package ru.nobird.android.stories.sample
+package ru.nobird.android.stories.sample.ui.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.nobird.android.stories.model.PlainStoryPart
 import ru.nobird.android.stories.model.Story
+import ru.nobird.android.stories.sample.R
+import ru.nobird.android.stories.sample.ui.adapter.StoriesAdapter
 import ru.nobird.android.stories.transition.SharedTransitionsManager
 import ru.nobird.android.stories.transition.SharedTransitionIntentBuilder
 import ru.nobird.android.stories.ui.delegate.SharedTransitionContainerDelegate

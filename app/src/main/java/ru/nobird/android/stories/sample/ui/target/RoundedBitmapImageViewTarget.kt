@@ -1,4 +1,4 @@
-package ru.nobird.android.stories.sample
+package ru.nobird.android.stories.sample.ui.target
 
 import android.graphics.Bitmap
 import android.widget.ImageView
