@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity() {
 
         storiesRecycler.adapter = adapter
         storiesRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        storiesRecycler.itemAnimator = null
     }
 
     override fun onStart() {

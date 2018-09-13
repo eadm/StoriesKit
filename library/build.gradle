@@ -26,7 +26,6 @@ android {
 
 dependencies {
     implementation libraries.kotlin
-    implementation libraries.appCompat
     implementation libraries.ktx
     implementation libraries.recyclerview
     implementation libraries.viewPager

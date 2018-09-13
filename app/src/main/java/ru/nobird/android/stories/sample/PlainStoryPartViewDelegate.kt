@@ -1,10 +1,11 @@
-package ru.nobird.android.stories.ui.delegate
+package ru.nobird.android.stories.sample
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.toColorInt
 import ru.nobird.android.stories.model.PlainStoryPart
 import ru.nobird.android.stories.model.StoryPart
+import ru.nobird.android.stories.ui.delegate.StoryPartViewDelegate
 
 class PlainStoryPartViewDelegate : StoryPartViewDelegate() {
     override fun onBindView(container: ViewGroup, part: StoryPart): View =

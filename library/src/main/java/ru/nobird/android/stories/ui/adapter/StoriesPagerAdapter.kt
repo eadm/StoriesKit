@@ -10,8 +10,8 @@ import ru.nobird.android.stories.ui.delegate.StoryPartViewDelegate
 
 class StoriesPagerAdapter(
         private val stories: List<Story>,
-        private val listener: StoryView.StoryProgressListener,
-        private val delegates: List<StoryPartViewDelegate>
+        private val delegates: List<StoryPartViewDelegate>,
+        private val listener: StoryView.StoryProgressListener
 ) : PagerAdapter() {
     override fun isViewFromObject(view: View, `object`: Any): Boolean =
             view == `object`

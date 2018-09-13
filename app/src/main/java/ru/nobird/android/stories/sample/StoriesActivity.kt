@@ -1,11 +1,21 @@
 package ru.nobird.android.stories.sample
 
 import android.os.Bundle
-import ru.nobird.android.stories.ui.activity.StoriesActivityBase
+import androidx.appcompat.app.AppCompatActivity
 
-class StoriesActivity : StoriesActivityBase() {
+class StoriesActivity : AppCompatActivity() {
+    private lateinit var storiesDelegate: StoriesActivityDelegate
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_stories)
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_stories)
+
+        storiesDelegate = StoriesActivityDelegate(this)
+        storiesDelegate.onCreate(savedInstanceState)
+    }
+
+    override fun onPause() {
+        storiesDelegate.onPause()
+        super.onPause()
     }
 }

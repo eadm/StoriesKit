@@ -15,7 +15,6 @@ import android.view.animation.OvershootInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.core.animation.doOnEnd
-import ru.nobird.android.stories.R
 import ru.nobird.android.stories.ui.animation.SupportViewPropertyAnimator
 
 class DismissableLayout
@@ -48,7 +47,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         visibility = View.GONE
     }
 
-    private val content: View by lazy { findViewById<View>(R.id.storiesPager) }
+    lateinit var content: View
 
     init {
         addView(stubView)
