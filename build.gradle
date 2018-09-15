@@ -10,6 +10,8 @@ buildscript {
     }
     dependencies {
         classpath gradlePlugins.android
+        classpath gradlePlugins.androidMaven
+        classpath gradlePlugins.bintray
         classpath gradlePlugins.kotlin
         classpath gradlePlugins.dexcount
 

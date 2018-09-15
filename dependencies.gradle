@@ -8,7 +8,9 @@ ext.versions = [
         buildTools           : '28.0.2',
 
         androidGradlePlugin  : '3.2.0-rc03',
-        kotlin               : '1.2.61',
+        androidMaven         : '2.1',
+        bintray              : '1.8.4',
+        kotlin               : '1.2.70',
 
         androidx             : '1.0.0-rc02',
 
@@ -19,6 +21,8 @@ ext.versions = [
 
 ext.gradlePlugins = [
         android       : "com.android.tools.build:gradle:$versions.androidGradlePlugin",
+        androidMaven  : "com.github.dcendents:android-maven-gradle-plugin:$versions.androidMaven",
+        bintray       : "com.jfrog.bintray.gradle:gradle-bintray-plugin:$versions.bintray",
         kotlin        : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
         dexcount      : "com.getkeepsafe.dexcount:dexcount-gradle-plugin:$versions.dexcount"
 ]

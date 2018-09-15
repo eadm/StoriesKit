@@ -6,9 +6,11 @@ import androidx.core.view.minusAssign
 import androidx.core.view.plusAssign
 import androidx.viewpager.widget.PagerAdapter
 import ru.nobird.android.stories.model.Story
+import ru.nobird.android.stories.ui.custom.StoryView
 import ru.nobird.android.stories.ui.delegate.StoryPartViewDelegate
 
 class StoryAdapter(
+        private val storyView: StoryView,
         internal val story: Story,
         private val storyPartDelegates: List<StoryPartViewDelegate>
 ): PagerAdapter() {
@@ -23,7 +25,7 @@ class StoryAdapter(
         val delegate = storyPartDelegates.find { it.isForViewType(part) }
             ?: throw IllegalStateException("No delegate for storyPart = $part")
 
-        return delegate.onBindView(container, part).also(container::plusAssign)
+        return delegate.onBindView(storyView, container, position, part).also(container::plusAssign)
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {

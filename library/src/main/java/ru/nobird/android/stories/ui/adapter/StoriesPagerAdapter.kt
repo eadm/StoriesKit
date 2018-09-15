@@ -23,7 +23,7 @@ class StoriesPagerAdapter(
             StoryView(container.context).apply {
                 tag = position
                 progressListener = listener
-                adapter = StoryAdapter(stories[position], delegates)
+                adapter = StoryAdapter(this, stories[position], delegates)
                 container += this
             }
 
