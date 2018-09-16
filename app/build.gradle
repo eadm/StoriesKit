@@ -23,7 +23,7 @@ android {
 }
 
 dependencies {
-    implementation project(':library')
+    implementation project(':storieskit')
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation libraries.kotlin
