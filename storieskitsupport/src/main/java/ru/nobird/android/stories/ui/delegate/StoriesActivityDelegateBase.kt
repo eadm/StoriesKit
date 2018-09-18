@@ -51,14 +51,16 @@ abstract class StoriesActivityDelegateBase(
                     }
                     val view = sharedTransitionDelegate?.getSharedView(storiesViewPager.currentItem) ?: return false
                     dismissableLayout.playEnterAnimation(view) {
+                        sharedTransitionDelegate.onPositionChanged(position)
                         storiesViewPager.findViewWithTag<StoryView>(position)?.resume()
                     }
                     return true
                 }
             })
+        } else {
+            sharedTransitionDelegate?.onPositionChanged(storiesViewPager.currentItem)
         }
 
-        sharedTransitionDelegate?.onPositionChanged(storiesViewPager.currentItem)
     }
 
     private fun initStoriesPager() {

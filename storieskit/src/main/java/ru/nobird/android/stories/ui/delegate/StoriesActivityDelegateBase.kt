@@ -44,12 +44,13 @@ abstract class StoriesActivityDelegateBase(
             dismissableLayout.doOnPreDraw {
                 val view = sharedTransitionDelegate?.getSharedView(storiesViewPager.currentItem) ?: return@doOnPreDraw
                 dismissableLayout.playEnterAnimation(view) {
+                    sharedTransitionDelegate.onPositionChanged(position)
                     storiesViewPager.findViewWithTag<StoryView>(position)?.resume()
                 }
             }
+        } else {
+            sharedTransitionDelegate?.onPositionChanged(storiesViewPager.currentItem)
         }
-
-        sharedTransitionDelegate?.onPositionChanged(storiesViewPager.currentItem)
     }
 
     private fun initStoriesPager() {
