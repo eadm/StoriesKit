@@ -1,1 +1,1 @@
-include ':app', ':storieskit'
+include ':app', ':storieskit', ':storieskitsupport'
