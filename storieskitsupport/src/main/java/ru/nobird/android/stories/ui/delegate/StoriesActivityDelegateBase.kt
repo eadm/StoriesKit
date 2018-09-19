@@ -49,9 +49,14 @@ abstract class StoriesActivityDelegateBase(
                         vto.isAlive -> vto.removeOnPreDrawListener(this)
                         else -> dismissableLayout.viewTreeObserver.removeOnPreDrawListener(this)
                     }
-                    val view = sharedTransitionDelegate?.getSharedView(storiesViewPager.currentItem) ?: return false
-                    dismissableLayout.playEnterAnimation(view) {
-                        sharedTransitionDelegate.onPositionChanged(position)
+                    val view = sharedTransitionDelegate?.getSharedView(storiesViewPager.currentItem)
+                    if (view != null) {
+                        dismissableLayout.playEnterAnimation(view) {
+                            sharedTransitionDelegate.onPositionChanged(position)
+                            storiesViewPager.findViewWithTag<StoryView>(position)?.resume()
+                        }
+                    } else {
+                        sharedTransitionDelegate?.onPositionChanged(position)
                         storiesViewPager.findViewWithTag<StoryView>(position)?.resume()
                     }
                     return true
@@ -94,9 +99,10 @@ abstract class StoriesActivityDelegateBase(
         }
     }
 
-    protected open fun finish() {
+    open fun finish() {
         val view = SharedTransitionsManager.getTransitionDelegate(key)?.getSharedView(storiesViewPager.currentItem)
         if (view == null) {
+            SharedTransitionsManager.getTransitionDelegate(key)?.onPositionChanged(-1)
             activity.finish()
         } else {
             dismissableLayout.playExitAnimation(view) {

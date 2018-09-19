@@ -42,9 +42,14 @@ abstract class StoriesActivityDelegateBase(
 
             dismissableLayout.visibility = View.INVISIBLE
             dismissableLayout.doOnPreDraw {
-                val view = sharedTransitionDelegate?.getSharedView(storiesViewPager.currentItem) ?: return@doOnPreDraw
-                dismissableLayout.playEnterAnimation(view) {
-                    sharedTransitionDelegate.onPositionChanged(position)
+                val view = sharedTransitionDelegate?.getSharedView(storiesViewPager.currentItem)
+                if (view != null) {
+                    dismissableLayout.playEnterAnimation(view) {
+                        sharedTransitionDelegate.onPositionChanged(position)
+                        storiesViewPager.findViewWithTag<StoryView>(position)?.resume()
+                    }
+                } else {
+                    sharedTransitionDelegate?.onPositionChanged(position)
                     storiesViewPager.findViewWithTag<StoryView>(position)?.resume()
                 }
             }
@@ -84,9 +89,10 @@ abstract class StoriesActivityDelegateBase(
         }
     }
 
-    protected open fun finish() {
+    open fun finish() {
         val view = SharedTransitionsManager.getTransitionDelegate(key)?.getSharedView(storiesViewPager.currentItem)
         if (view == null) {
+            SharedTransitionsManager.getTransitionDelegate(key)?.onPositionChanged(-1)
             activity.finish()
         } else {
             dismissableLayout.playExitAnimation(view) {

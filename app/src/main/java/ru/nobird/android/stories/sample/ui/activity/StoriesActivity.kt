@@ -20,4 +20,8 @@ class StoriesActivity : AppCompatActivity() {
         storiesDelegate.onPause()
         super.onPause()
     }
+
+    override fun onBackPressed() {
+        storiesDelegate.finish()
+    }
 }
