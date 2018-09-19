@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         val stories = arrayListOf(
                 Story(
+                        1,
                         "Story 1",
                         "https://picsum.photos/1000/2000?image=992",
                         listOf(
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
                         )
                 ),
                 Story(
+                        1,
                         "Story 2",
                         "https://picsum.photos/1000/2000?image=977",
                         listOf(
