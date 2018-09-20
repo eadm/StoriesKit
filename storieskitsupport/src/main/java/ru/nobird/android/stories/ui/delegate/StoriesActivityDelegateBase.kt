@@ -32,7 +32,15 @@ abstract class StoriesActivityDelegateBase(
         initStoriesPager()
 
         dismissableLayout.content = storiesViewPager
-        dismissableLayout.onDismiss = ::finish
+        dismissableLayout.addDismissListener(object : DismissableLayout.DismissListener {
+            override fun onDragCancelled() {
+                storiesViewPager.findViewWithTag<StoryView>(storiesViewPager.currentItem)?.resume()
+            }
+
+            override fun onDismiss() {
+                finish()
+            }
+        })
 
         val sharedTransitionDelegate = SharedTransitionsManager.getTransitionDelegate(key)
 

@@ -39,7 +39,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 
     private var rollbackAnimation: AnimatorSet? = null
 
-    var onDismiss: (() -> Unit)? = null
+    private val listeners = mutableListOf<DismissListener>()
 
     private val stubView = ImageView(context).apply {
         layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
@@ -86,12 +86,17 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 val adx = Math.abs(dx)
                 val ady = Math.abs(dy)
 
+                val wasInterceptedBefore = intercepted
                 intercepted =
                         intercepted ||
                         isOwnEvent ||
                         ady > MIN_DELTA && ady > adx
 
                 if (intercepted) {
+                    if (!wasInterceptedBefore) {
+                        listeners.forEach(DismissListener::onDragStarted)
+                    }
+
                     translationY += dy
 
                     val scale = 1f - Math.min(1f, Math.abs(translationY) / quarterHeight) * (1f - MIN_SCALE)
@@ -106,14 +111,17 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 scaleX = 1f
                 scaleY = 1f
 
+                listeners.forEach(DismissListener::onDragCancelled)
+
                 isCompleteMovement = false
             }
 
             MotionEvent.ACTION_UP -> {
                 if (Math.abs(translationY) > quarterHeight) {
-                    onDismiss?.invoke()
+                    listeners.forEach(DismissListener::onDismiss)
                 } else {
                     playRollbackAnimation()
+                    listeners.forEach(DismissListener::onDragCancelled)
                 }
 
                 parent.requestDisallowInterceptTouchEvent(false)
@@ -232,5 +240,19 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         val canvas = Canvas(bitmap)
         source.draw(canvas)
         stubView.setImageBitmap(bitmap)
+    }
+
+    fun addDismissListener(listener: DismissListener) {
+        listeners += listener
+    }
+
+    fun removeDismissListener(listener: DismissListener) {
+        listeners -= listener
+    }
+
+    interface DismissListener {
+        fun onDragStarted() {}
+        fun onDragCancelled() {}
+        fun onDismiss() {}
     }
 }
