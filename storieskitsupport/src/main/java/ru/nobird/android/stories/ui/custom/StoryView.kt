@@ -111,6 +111,11 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         resume()
     }
 
+    fun restartCurrentPart() {
+        progress.currentPart = progress.currentPart
+        resume()
+    }
+
     interface StoryProgressListener {
         fun onNext()
         fun onPrev()

@@ -88,7 +88,7 @@ abstract class StoriesActivityDelegateBase(
 
             override fun onPageSelected(position: Int) {
                 SharedTransitionsManager.getTransitionDelegate(key)?.onPositionChanged(position)
-                storiesViewPager.findViewWithTag<StoryView>(position)?.restart()
+                storiesViewPager.findViewWithTag<StoryView>(position)?.restartCurrentPart()
             }
         })
     }
