@@ -240,6 +240,14 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         stubView.setImageBitmap(bitmap)
     }
 
+    fun addDismissListener(listener: DismissListener) {
+        listeners += listener
+    }
+
+    fun removeDismissListener(listener: DismissListener) {
+        listeners -= listener
+    }
+
     interface DismissListener {
         fun onDragStarted() {}
         fun onDragCancelled() {}
