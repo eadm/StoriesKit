@@ -62,7 +62,7 @@ abstract class StoriesActivityDelegateBase(
         storiesViewPager.adapter = StoriesPagerAdapter(stories, storyPartDelegates, object : StoryView.StoryProgressListener {
             override fun onNext() {
                 if (storiesViewPager.currentItem == (storiesViewPager.adapter?.count ?: 0) - 1) {
-                    finish()
+                    onComplete()
                 }
                 storiesViewPager.currentItem++
             }
@@ -78,7 +78,7 @@ abstract class StoriesActivityDelegateBase(
 
             override fun onPageSelected(position: Int) {
                 SharedTransitionsManager.getTransitionDelegate(key)?.onPositionChanged(position)
-                storiesViewPager.findViewWithTag<StoryView>(position)?.resume()
+                storiesViewPager.findViewWithTag<StoryView>(position)?.restart()
             }
         })
     }
@@ -87,6 +87,13 @@ abstract class StoriesActivityDelegateBase(
         if (activity.isFinishing) {
             activity.overridePendingTransition(0, 0)
         }
+    }
+
+    /**
+     * Calls when stories completed
+     */
+    protected open fun onComplete() {
+        finish()
     }
 
     open fun finish() {

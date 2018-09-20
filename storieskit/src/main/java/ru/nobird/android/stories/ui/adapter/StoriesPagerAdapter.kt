@@ -9,7 +9,7 @@ import ru.nobird.android.stories.ui.custom.StoryView
 import ru.nobird.android.stories.ui.delegate.StoryPartViewDelegate
 
 class StoriesPagerAdapter(
-        private val stories: List<Story>,
+        val stories: List<Story>,
         private val delegates: List<StoryPartViewDelegate>,
         private val listener: StoryView.StoryProgressListener
 ) : PagerAdapter() {
@@ -23,7 +23,7 @@ class StoriesPagerAdapter(
             StoryView(container.context).apply {
                 tag = position
                 progressListener = listener
-                adapter = StoryAdapter(this, stories[position], delegates)
+                adapter = StoryAdapter(this, delegates, stories[position])
                 container += this
             }
 

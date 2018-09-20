@@ -11,9 +11,16 @@ import ru.nobird.android.stories.ui.delegate.StoryPartViewDelegate
 
 class StoryAdapter(
         private val storyView: StoryView,
-        internal val story: Story,
-        private val storyPartDelegates: List<StoryPartViewDelegate>
+        private val storyPartDelegates: List<StoryPartViewDelegate>,
+        _story: Story
 ): PagerAdapter() {
+    var story: Story = _story
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
+
     override fun isViewFromObject(view: View, `object`: Any): Boolean =
             view == `object`
 
