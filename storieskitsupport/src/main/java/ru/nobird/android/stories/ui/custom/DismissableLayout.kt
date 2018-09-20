@@ -133,6 +133,9 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         val targetBounds = Rect()
         getGlobalVisibleRect(targetBounds, offset)
 
+        pivotX = width / 2f
+        pivotY = height / 2f
+
         startBounds.offset(-offset.x, -offset.y)
         targetBounds.offset(-offset.x, -offset.y)
 
