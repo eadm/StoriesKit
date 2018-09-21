@@ -18,7 +18,7 @@ class StoryView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
     companion object {
-        private val TAP_TIMEOUT_MS = ViewConfiguration.getTapTimeout()
+        private val TAP_TIMEOUT_MS = ViewConfiguration.getJumpTapTimeout()
         private val TOUCH_SLOP_SQUARE_PX = (8 * Resources.getSystem().displayMetrics.density).let { it * it }
     }
 
