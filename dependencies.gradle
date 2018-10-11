@@ -7,13 +7,13 @@ ext.versions = [
         compileSdk           : 28,
         buildTools           : '28.0.2',
 
-        androidGradlePlugin  : '3.2.0-rc03',
+        androidGradlePlugin  : '3.2.0',
         androidMaven         : '2.1',
         bintray              : '1.8.4',
         kotlin               : '1.2.70',
 
-        androidx             : '1.0.0-rc02',
-        support              : '27.1.1',
+        androidx             : '1.0.0',
+        support              : '28.0.0',
 
         glide                : '4.8.0',
 
