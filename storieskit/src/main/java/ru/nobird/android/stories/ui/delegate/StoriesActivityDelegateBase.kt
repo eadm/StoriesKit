@@ -81,7 +81,13 @@ abstract class StoriesActivityDelegateBase(
         })
 
         storiesViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {}
+            override fun onPageScrollStateChanged(state: Int) {
+                if (state == ViewPager.SCROLL_STATE_IDLE) {
+                    storiesViewPager
+                        .findViewWithTag<StoryView>(storiesViewPager.currentItem)
+                        ?.resume()
+                }
+            }
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {
