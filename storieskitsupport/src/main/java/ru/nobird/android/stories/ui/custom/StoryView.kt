@@ -67,14 +67,13 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         return super.onInterceptTouchEvent(event)
     }
 
-
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        processTouchEvent(event)
+        processTouchEvent(event, isOwnEvent = true)
         return true
     }
 
-    private fun processTouchEvent(event: MotionEvent) {
+    private fun processTouchEvent(event: MotionEvent, isOwnEvent: Boolean = false) {
         when(event.action and MotionEvent.ACTION_MASK) {
             MotionEvent.ACTION_DOWN -> {
                 lastDownEvent = MotionEvent.obtain(event)
@@ -85,7 +84,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 val dx = event.x - lastDownEvent.x
                 val dy = event.y - lastDownEvent.y
                 val dt = event.eventTime - lastDownEvent.eventTime
-                if (dx * dx + dy * dy < TOUCH_SLOP_SQUARE_PX && dt < TAP_TIMEOUT_MS) {
+                if (dx * dx + dy * dy < TOUCH_SLOP_SQUARE_PX && dt < TAP_TIMEOUT_MS && isOwnEvent) {
                     if (event.x > width / 2) {
                         progress.next()
                     } else {
