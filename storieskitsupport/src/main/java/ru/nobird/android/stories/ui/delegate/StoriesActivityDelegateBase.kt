@@ -13,7 +13,7 @@ import ru.nobird.android.stories.ui.custom.DismissableLayout
 import ru.nobird.android.stories.ui.custom.StoryView
 
 abstract class StoriesActivityDelegateBase(
-        private val activity: Activity
+    private val activity: Activity
 ) {
     protected abstract val dismissableLayout: DismissableLayout
     protected abstract val storiesViewPager: ViewPager
@@ -101,7 +101,17 @@ abstract class StoriesActivityDelegateBase(
         })
     }
 
+    fun onResume() {
+        storiesViewPager
+            .findViewWithTag<StoryView>(storiesViewPager.currentItem)
+            ?.resume()
+    }
+
     fun onPause() {
+        storiesViewPager
+            .findViewWithTag<StoryView>(storiesViewPager.currentItem)
+            ?.pause()
+
         if (activity.isFinishing) {
             activity.overridePendingTransition(0, 0)
         }
