@@ -16,6 +16,11 @@ class StoriesActivity : AppCompatActivity() {
         storiesDelegate.onCreate(savedInstanceState)
     }
 
+    override fun onResume() {
+        super.onResume()
+        storiesDelegate.onResume()
+    }
+
     override fun onPause() {
         storiesDelegate.onPause()
         super.onPause()
