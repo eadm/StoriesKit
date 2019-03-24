@@ -102,7 +102,7 @@ abstract class StoriesFragmentDelegateBase(
             onClose()
         } else {
             dismissableLayout.playExitAnimation(view) {
-                sharedTransitionDelegate?.onPositionChanged(-1)
+                sharedTransitionDelegate.onPositionChanged(-1)
                 onClose()
             }
         }

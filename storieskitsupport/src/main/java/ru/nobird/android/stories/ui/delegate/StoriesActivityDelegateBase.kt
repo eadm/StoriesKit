@@ -10,7 +10,11 @@ import ru.nobird.android.stories.transition.SharedTransitionIntentBuilder
 import ru.nobird.android.stories.transition.SharedTransitionsManager
 import ru.nobird.android.stories.ui.adapter.StoriesPagerAdapter
 import ru.nobird.android.stories.ui.custom.DismissableLayout
-import ru.nobird.android.stories.ui.custom.StoryView
+import ru.nobird.android.stories.ui.extension.getStoryViewAt
+import ru.nobird.android.stories.ui.extension.pauseCurrentStory
+import ru.nobird.android.stories.ui.extension.resumeCurrentStory
+import ru.nobird.android.stories.ui.listener.StoriesContainerPageChangeListener
+import ru.nobird.android.stories.ui.listener.StoriesContainerProgressListener
 
 abstract class StoriesActivityDelegateBase(
     private val activity: Activity
@@ -34,7 +38,7 @@ abstract class StoriesActivityDelegateBase(
         dismissableLayout.content = storiesViewPager
         dismissableLayout.addDismissListener(object : DismissableLayout.DismissListener {
             override fun onDragCancelled() {
-                storiesViewPager.findViewWithTag<StoryView>(storiesViewPager.currentItem)?.resume()
+                storiesViewPager.resumeCurrentStory()
             }
 
             override fun onDismiss() {
@@ -42,7 +46,7 @@ abstract class StoriesActivityDelegateBase(
             }
         })
 
-        val sharedTransitionDelegate = SharedTransitionsManager.getTransitionDelegate(key)
+        val sharedTransitionDelegate = getSharedTransitionContainerDelegate()
 
         if (savedInstanceState == null) {
             val position = arguments.getInt(SharedTransitionIntentBuilder.EXTRA_POSITION)
@@ -62,11 +66,11 @@ abstract class StoriesActivityDelegateBase(
                     if (view != null) {
                         dismissableLayout.playEnterAnimation(view) {
                             sharedTransitionDelegate.onPositionChanged(position)
-                            storiesViewPager.findViewWithTag<StoryView>(position)?.resume()
+                            storiesViewPager.getStoryViewAt(position)?.resume()
                         }
                     } else {
                         sharedTransitionDelegate?.onPositionChanged(position)
-                        storiesViewPager.findViewWithTag<StoryView>(position)?.resume()
+                        storiesViewPager.getStoryViewAt(position)?.resume()
                     }
                     return true
                 }
@@ -78,46 +82,22 @@ abstract class StoriesActivityDelegateBase(
     }
 
     private fun initStoriesPager() {
-        storiesViewPager.adapter = StoriesPagerAdapter(stories, storyPartDelegates, object : StoryView.StoryProgressListener {
-            override fun onNext() {
-                if (storiesViewPager.currentItem == (storiesViewPager.adapter?.count ?: 0) - 1) {
-                    onComplete()
-                }
-                storiesViewPager.currentItem++
-            }
+        storiesViewPager.adapter =
+            StoriesPagerAdapter(stories, storyPartDelegates, StoriesContainerProgressListener(storiesViewPager, ::onComplete))
 
-            override fun onPrev() {
-                storiesViewPager.currentItem--
-            }
-        })
-
-        storiesViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {
-                if (state == ViewPager.SCROLL_STATE_IDLE) {
-                    storiesViewPager
-                        .findViewWithTag<StoryView>(storiesViewPager.currentItem)
-                        ?.resume()
-                }
-            }
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-
-            override fun onPageSelected(position: Int) {
-                SharedTransitionsManager.getTransitionDelegate(key)?.onPositionChanged(position)
-                storiesViewPager.findViewWithTag<StoryView>(position)?.restartCurrentPart()
-            }
-        })
+        storiesViewPager
+            .addOnPageChangeListener(StoriesContainerPageChangeListener(storiesViewPager, ::getSharedTransitionContainerDelegate))
     }
 
+    private fun getSharedTransitionContainerDelegate(): SharedTransitionContainerDelegate? =
+        SharedTransitionsManager.getTransitionDelegate(key)
+
     fun onResume() {
-        storiesViewPager
-            .findViewWithTag<StoryView>(storiesViewPager.currentItem)
-            ?.resume()
+        storiesViewPager.resumeCurrentStory()
     }
 
     fun onPause() {
-        storiesViewPager
-            .findViewWithTag<StoryView>(storiesViewPager.currentItem)
-            ?.pause()
+        storiesViewPager.pauseCurrentStory()
 
         if (activity.isFinishing) {
             activity.overridePendingTransition(0, 0)
@@ -132,13 +112,15 @@ abstract class StoriesActivityDelegateBase(
     }
 
     open fun finish() {
-        val view = SharedTransitionsManager.getTransitionDelegate(key)?.getSharedView(storiesViewPager.currentItem)
+        val sharedTransitionDelegate = getSharedTransitionContainerDelegate()
+
+        val view = sharedTransitionDelegate?.getSharedView(storiesViewPager.currentItem)
         if (view == null) {
-            SharedTransitionsManager.getTransitionDelegate(key)?.onPositionChanged(-1)
+            sharedTransitionDelegate?.onPositionChanged(-1)
             activity.finish()
         } else {
             dismissableLayout.playExitAnimation(view) {
-                SharedTransitionsManager.getTransitionDelegate(key)?.onPositionChanged(-1)
+                sharedTransitionDelegate.onPositionChanged(-1)
                 activity.finish()
             }
         }

@@ -101,13 +101,15 @@ abstract class StoriesActivityDelegateBase(
     }
 
     open fun finish() {
-        val view = SharedTransitionsManager.getTransitionDelegate(key)?.getSharedView(storiesViewPager.currentItem)
+        val sharedTransitionDelegate = getSharedTransitionContainerDelegate()
+
+        val view = sharedTransitionDelegate?.getSharedView(storiesViewPager.currentItem)
         if (view == null) {
-            SharedTransitionsManager.getTransitionDelegate(key)?.onPositionChanged(-1)
+            sharedTransitionDelegate?.onPositionChanged(-1)
             activity.finish()
         } else {
             dismissableLayout.playExitAnimation(view) {
-                SharedTransitionsManager.getTransitionDelegate(key)?.onPositionChanged(-1)
+                sharedTransitionDelegate.onPositionChanged(-1)
                 activity.finish()
             }
         }

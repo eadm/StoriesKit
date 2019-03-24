@@ -1,6 +1,6 @@
 package ru.nobird.android.stories.ui.listener
 
-import androidx.viewpager.widget.ViewPager
+import android.support.v4.view.ViewPager
 import ru.nobird.android.stories.ui.custom.StoryView
 import ru.nobird.android.stories.ui.extension.resumeCurrentStory
 
