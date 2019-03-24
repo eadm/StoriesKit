@@ -1,19 +1,18 @@
 package ru.nobird.android.stories.ui.delegate
 
-import android.app.Activity
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.view.View
 import android.view.ViewTreeObserver
 import ru.nobird.android.stories.model.Story
 import ru.nobird.android.stories.transition.SharedTransitionIntentBuilder
-import ru.nobird.android.stories.transition.SharedTransitionsManager
 import ru.nobird.android.stories.ui.adapter.StoriesPagerAdapter
 import ru.nobird.android.stories.ui.custom.DismissableLayout
 import ru.nobird.android.stories.ui.custom.StoryView
 
-abstract class StoriesActivityDelegateBase(
-    private val activity: Activity
+abstract class StoriesFragmentDelegateBase(
+    private val fragment: Fragment
 ) {
     protected abstract val dismissableLayout: DismissableLayout
     protected abstract val storiesViewPager: ViewPager
@@ -22,11 +21,9 @@ abstract class StoriesActivityDelegateBase(
 
     protected abstract val storyPartDelegates: List<StoryPartViewDelegate>
 
-    private lateinit var key: String
     private lateinit var stories: List<Story>
 
     fun onCreate(savedInstanceState: Bundle?) {
-        key = arguments.getString(SharedTransitionIntentBuilder.EXTRA_KEY)!!
         stories = arguments.getParcelableArrayList(SharedTransitionIntentBuilder.EXTRA_STORIES)!!
 
         initStoriesPager()
@@ -42,7 +39,7 @@ abstract class StoriesActivityDelegateBase(
             }
         })
 
-        val sharedTransitionDelegate = SharedTransitionsManager.getTransitionDelegate(key)
+        val sharedTransitionDelegate = fragment.targetFragment as? SharedTransitionContainerDelegate
 
         if (savedInstanceState == null) {
             val position = arguments.getInt(SharedTransitionIntentBuilder.EXTRA_POSITION)
@@ -74,7 +71,6 @@ abstract class StoriesActivityDelegateBase(
         } else {
             sharedTransitionDelegate?.onPositionChanged(storiesViewPager.currentItem)
         }
-
     }
 
     private fun initStoriesPager() {
@@ -102,7 +98,9 @@ abstract class StoriesActivityDelegateBase(
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {
-                SharedTransitionsManager.getTransitionDelegate(key)?.onPositionChanged(position)
+                (fragment.targetFragment as? SharedTransitionContainerDelegate)
+                    ?.onPositionChanged(position)
+
                 storiesViewPager.findViewWithTag<StoryView>(position)?.restartCurrentPart()
             }
         })
@@ -118,10 +116,6 @@ abstract class StoriesActivityDelegateBase(
         storiesViewPager
             .findViewWithTag<StoryView>(storiesViewPager.currentItem)
             ?.pause()
-
-        if (activity.isFinishing) {
-            activity.overridePendingTransition(0, 0)
-        }
     }
 
     /**
@@ -132,15 +126,22 @@ abstract class StoriesActivityDelegateBase(
     }
 
     open fun finish() {
-        val view = SharedTransitionsManager.getTransitionDelegate(key)?.getSharedView(storiesViewPager.currentItem)
+        val sharedTransitionDelegate = fragment.targetFragment as? SharedTransitionContainerDelegate
+
+        val view = sharedTransitionDelegate?.getSharedView(storiesViewPager.currentItem)
         if (view == null) {
-            SharedTransitionsManager.getTransitionDelegate(key)?.onPositionChanged(-1)
-            activity.finish()
+            sharedTransitionDelegate?.onPositionChanged(-1)
+            onClose()
         } else {
             dismissableLayout.playExitAnimation(view) {
-                SharedTransitionsManager.getTransitionDelegate(key)?.onPositionChanged(-1)
-                activity.finish()
+                sharedTransitionDelegate?.onPositionChanged(-1)
+                onClose()
             }
         }
     }
+
+    /**
+     * Close current screen. Due to different possible navigation implementations this should be implemented by user.
+     */
+    protected abstract fun onClose()
 }
