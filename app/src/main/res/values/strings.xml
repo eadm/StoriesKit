@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Stories</string>
+    <string name="fragment_implementation">Fragment implementation</string>
+    <string name="activity_implementation">Activity implementation</string>
 </resources>
