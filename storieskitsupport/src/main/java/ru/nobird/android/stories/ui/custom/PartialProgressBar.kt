@@ -131,8 +131,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         } else {
             currentPart = part
             progressListener?.onPositionChanged(part)
+            resume()
         }
-        resume()
     }
 
     fun next() {
