@@ -4,9 +4,10 @@ import android.os.Bundle
 import ru.nobird.android.stories.model.Story
 
 object SharedTransitionArgumentBuilder {
-    fun createArguments(stories: List<Story>, position: Int = 0): Bundle =
+    fun createArguments(key: String, position: Int = 0, stories: List<Story>): Bundle =
         Bundle(2)
             .apply {
+                putString(SharedTransitionIntentBuilder.EXTRA_KEY, key)
                 putInt(SharedTransitionIntentBuilder.EXTRA_POSITION, position)
                 putParcelableArrayList(SharedTransitionIntentBuilder.EXTRA_STORIES, ArrayList(stories))
             }
