@@ -46,7 +46,7 @@ abstract class StoriesActivityDelegateBase(
             }
         })
 
-        val sharedTransitionDelegate = SharedTransitionsManager.getTransitionDelegate(key)
+        val sharedTransitionDelegate = getSharedTransitionContainerDelegate()
 
         if (savedInstanceState == null) {
             val position = arguments.getInt(SharedTransitionIntentBuilder.EXTRA_POSITION)

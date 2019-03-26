@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import ru.nobird.android.stories.model.Story
 import ru.nobird.android.stories.transition.SharedTransitionIntentBuilder
+import ru.nobird.android.stories.transition.SharedTransitionsManager
 import ru.nobird.android.stories.ui.adapter.StoriesPagerAdapter
 import ru.nobird.android.stories.ui.custom.DismissableLayout
 import ru.nobird.android.stories.ui.extension.getStoryViewAt
@@ -25,9 +26,11 @@ abstract class StoriesFragmentDelegateBase(
 
     protected abstract val storyPartDelegates: List<StoryPartViewDelegate>
 
+    private lateinit var key: String
     private lateinit var stories: List<Story>
 
     fun onCreate(savedInstanceState: Bundle?) {
+        key = arguments.getString(SharedTransitionIntentBuilder.EXTRA_KEY)!!
         stories = arguments.getParcelableArrayList(SharedTransitionIntentBuilder.EXTRA_STORIES)!!
 
         initStoriesPager()
@@ -86,7 +89,7 @@ abstract class StoriesFragmentDelegateBase(
     }
 
     private fun getSharedTransitionContainerDelegate(): SharedTransitionContainerDelegate? =
-        fragment.targetFragment as? SharedTransitionContainerDelegate
+        SharedTransitionsManager.getTransitionDelegate(key)
 
     fun onResume() {
         storiesViewPager.resumeCurrentStory()

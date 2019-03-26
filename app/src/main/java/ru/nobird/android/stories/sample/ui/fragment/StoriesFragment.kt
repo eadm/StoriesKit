@@ -13,9 +13,9 @@ import ru.nobird.android.stories.transition.SharedTransitionArgumentBuilder
 
 class StoriesFragment : Fragment() {
     companion object {
-        fun newInstance(stories: List<Story>, position: Int = 0): Fragment =
+        fun newInstance(key: String, position: Int = 0, stories: List<Story>): Fragment =
             StoriesFragment().apply {
-                arguments = SharedTransitionArgumentBuilder.createArguments(stories, position)
+                arguments = SharedTransitionArgumentBuilder.createArguments(key, position, stories)
             }
     }
 
@@ -42,6 +42,10 @@ class StoriesFragment : Fragment() {
     override fun onPause() {
         storiesDelegate.onPause()
         super.onPause()
+    }
+
+    fun finish() {
+        storiesDelegate.finish()
     }
 
     override fun onDestroy() {
