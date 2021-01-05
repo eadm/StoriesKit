@@ -4,27 +4,29 @@ import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.doOnPreDraw
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import ru.nobird.android.stories.model.Story
 import ru.nobird.android.stories.transition.SharedTransitionIntentBuilder
 import ru.nobird.android.stories.transition.SharedTransitionsManager
-import ru.nobird.android.stories.ui.adapter.StoriesPagerAdapter
+import ru.nobird.android.stories.ui.adapter.StoryAdapterDelegate
+import ru.nobird.android.stories.ui.adapter.StoryPartAdapterDelegate
 import ru.nobird.android.stories.ui.custom.DismissableLayout
 import ru.nobird.android.stories.ui.extension.getStoryViewAt
 import ru.nobird.android.stories.ui.extension.pauseCurrentStory
 import ru.nobird.android.stories.ui.extension.resumeCurrentStory
 import ru.nobird.android.stories.ui.listener.StoriesContainerPageChangeListener
 import ru.nobird.android.stories.ui.listener.StoriesContainerProgressListener
+import ru.nobird.android.ui.adapters.DefaultDelegateAdapter
 
 abstract class StoriesActivityDelegateBase(
     private val activity: Activity
 ) {
     protected abstract val dismissableLayout: DismissableLayout
-    protected abstract val storiesViewPager: ViewPager
+    protected abstract val storiesViewPager: ViewPager2
 
     protected abstract val arguments: Bundle
 
-    protected abstract val storyPartDelegates: List<StoryPartViewDelegate>
+    protected abstract val storyPartDelegates: List<StoryPartAdapterDelegate>
 
     private lateinit var key: String
     private lateinit var stories: List<Story>
@@ -71,11 +73,14 @@ abstract class StoriesActivityDelegateBase(
     }
 
     private fun initStoriesPager() {
-        storiesViewPager.adapter =
-            StoriesPagerAdapter(stories, storyPartDelegates, StoriesContainerProgressListener(storiesViewPager, ::onComplete))
+        storiesViewPager.adapter = DefaultDelegateAdapter<Story>()
+            .also {
+                it += StoryAdapterDelegate(storyPartDelegates, StoriesContainerProgressListener(storiesViewPager, ::onComplete))
+                it.items = stories
+            }
 
         storiesViewPager
-            .addOnPageChangeListener(StoriesContainerPageChangeListener(storiesViewPager, ::getSharedTransitionContainerDelegate))
+            .registerOnPageChangeCallback(StoriesContainerPageChangeListener(storiesViewPager, ::getSharedTransitionContainerDelegate))
     }
 
     private fun getSharedTransitionContainerDelegate(): SharedTransitionContainerDelegate? =

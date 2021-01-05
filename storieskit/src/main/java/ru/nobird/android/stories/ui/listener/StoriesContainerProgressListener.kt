@@ -1,15 +1,15 @@
 package ru.nobird.android.stories.ui.listener
 
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import ru.nobird.android.stories.ui.custom.StoryView
 import ru.nobird.android.stories.ui.extension.resumeCurrentStory
 
 class StoriesContainerProgressListener(
-    private val storiesViewPager: ViewPager,
+    private val storiesViewPager: ViewPager2,
     private val onComplete: () -> Unit
 ) : StoryView.StoryProgressListener {
     override fun onNext() {
-        if (storiesViewPager.currentItem == (storiesViewPager.adapter?.count ?: 0) - 1) {
+        if (storiesViewPager.currentItem == (storiesViewPager.adapter?.itemCount ?: 0) - 1) {
             onComplete()
         }
         storiesViewPager.currentItem++

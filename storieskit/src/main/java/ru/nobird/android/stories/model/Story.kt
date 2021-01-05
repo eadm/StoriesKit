@@ -2,13 +2,14 @@ package ru.nobird.android.stories.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import ru.nobird.android.core.model.Identifiable
 
 data class Story(
-        val id: Long,
-        val title: String,
-        val cover: String,
-        val parts: List<StoryPart>
-) : Parcelable {
+    override val id: Long,
+    val title: String,
+    val cover: String,
+    val parts: List<StoryPart>
+) : Parcelable, Identifiable<Long> {
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(id)
         parcel.writeString(title)
@@ -20,15 +21,15 @@ data class Story(
 
     companion object CREATOR : Parcelable.Creator<Story> {
         override fun createFromParcel(parcel: Parcel) = Story(
-                parcel.readLong(),
-                parcel.readString()!!,
-                parcel.readString()!!,
-                mutableListOf<StoryPart>().apply {
-                    parcel.readList(this, StoryPart::class.java.classLoader)
-                }
-            )
+            parcel.readLong(),
+            parcel.readString()!!,
+            parcel.readString()!!,
+            mutableListOf<StoryPart>().apply {
+                parcel.readList(this, StoryPart::class.java.classLoader)
+            }
+        )
 
         override fun newArray(size: Int): Array<Story?> =
-                arrayOfNulls(size)
+            arrayOfNulls(size)
     }
 }

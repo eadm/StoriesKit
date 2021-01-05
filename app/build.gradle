@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-parcelize'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -43,6 +44,8 @@ dependencies {
     implementation libraries.ktx
     implementation libraries.recyclerview
     implementation libraries.viewBindingDelegate
+    implementation libraries.viewPager2
+    implementation libraries.adapters
     implementation libraries.glide
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     testImplementation 'junit:junit:4.12'

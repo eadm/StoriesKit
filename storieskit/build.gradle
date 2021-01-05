@@ -34,6 +34,9 @@ dependencies {
     implementation libraries.ktx
     implementation libraries.appCompat
     implementation libraries.viewPager
+    implementation libraries.viewPager2
+    implementation libraries.adapters
+    implementation libraries.model
 }
 
 ext {

@@ -8,10 +8,12 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewConfiguration
 import android.widget.FrameLayout
+import androidx.viewpager2.widget.ViewPager2
 import ru.nobird.android.stories.R
 import ru.nobird.android.stories.model.Story
 import ru.nobird.android.stories.model.StoryPart
-import ru.nobird.android.stories.ui.adapter.StoryAdapter
+import ru.nobird.android.stories.ui.adapter.StoryPartAdapterDelegate
+import ru.nobird.android.ui.adapters.DefaultDelegateAdapter
 
 class StoryView
 @JvmOverloads
@@ -22,29 +24,42 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     }
 
     private val progress: PartialProgressBar
-    private val pager: StoryViewPager
 
     private lateinit var lastDownEvent: MotionEvent
 
     var progressListener: StoryProgressListener? = null
 
-    var adapter: StoryAdapter? = null
+//    var adapter: StoryAdapter? = null
+//        set(value) {
+//            field = value
+//            story = value?.story
+//            pager.adapter = value
+//        }
+//
+    private val adapter = DefaultDelegateAdapter<StoryPart>()
+
+    var delegates: List<StoryPartAdapterDelegate>
+        get() = adapter.delegates
         set(value) {
-            field = value
-            story = value?.story
-            pager.adapter = value
+            value.forEach {
+                adapter += it
+            }
         }
 
-    private var story: Story? = null
+    var story: Story? = null
         set(value) {
             field = value
+            adapter.items = value?.parts.orEmpty()
             progress.parts = value?.parts?.map(StoryPart::duration)?.toLongArray() ?: longArrayOf()
         }
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_story, this, true)
         progress = view.findViewById(R.id.storyProgress)
-        pager = view.findViewById(R.id.storyViewPager)
+
+        val pager = view.findViewById<ViewPager2>(R.id.storyViewPager)
+        pager.isUserInputEnabled = false
+        pager.adapter = adapter
 
         progress.progressListener = object : PartialProgressBar.PartialProgressListener {
             override fun onPositionChanged(position: Int) {
