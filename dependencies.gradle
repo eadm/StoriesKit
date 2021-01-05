@@ -3,21 +3,23 @@ ext.versions = [
         name                 : '1.1.2',
 
         minSdk               : 15,
-        targetSdk            : 28,
-        compileSdk           : 28,
-        buildTools           : '28.0.3',
+        targetSdk            : 30,
+        compileSdk           : 30,
+        buildTools           : '29.0.3',
 
-        androidGradlePlugin  : '3.3.2',
+        androidGradlePlugin  : '4.1.1',
         androidMaven         : '2.1',
-        bintray              : '1.8.4',
-        kotlin               : '1.3.21',
+        bintray              : '1.8.5',
+        kotlin               : '1.4.21',
 
-        androidx             : '1.0.0',
-        support              : '28.0.0',
+        ktx                  : '1.3.2',
+        appCompat            : '1.2.0',
+        recyclerview         : '1.1.0',
+        viewPager            : '1.0.0',
 
-        glide                : '4.8.0',
+        glide                : '4.11.0',
 
-        dexcount             : '0.8.2'
+        dexcount             : '2.0.0'
 ]
 
 ext.gradlePlugins = [
@@ -31,13 +33,11 @@ ext.gradlePlugins = [
 ext.libraries = [
         kotlin               : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin",
 
-        appCompat            : "androidx.appcompat:appcompat:$versions.androidx",
-        ktx                  : "androidx.core:core-ktx:$versions.androidx",
-        viewPager            : "androidx.viewpager:viewpager:$versions.androidx",
-        recyclerview         : "androidx.recyclerview:recyclerview:$versions.androidx",
-
-        supportAppCompat     : "com.android.support:appcompat-v7:$versions.support",
-        supportDesign        : "com.android.support:design:$versions.support",
+        appCompat            : "androidx.appcompat:appcompat:$versions.appCompat",
+        ktx                  : "androidx.core:core-ktx:$versions.ktx",
+        viewPager            : "androidx.viewpager:viewpager:$versions.viewPager",
+        viewPager2           : "androidx.viewpager2:viewpager2:$versions.viewPager",
+        recyclerview         : "androidx.recyclerview:recyclerview:$versions.recyclerview",
 
         glide                : "com.github.bumptech.glide:glide:$versions.glide"
 ]
