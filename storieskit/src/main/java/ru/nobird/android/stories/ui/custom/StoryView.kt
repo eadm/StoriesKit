@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewConfiguration
 import android.widget.FrameLayout
-import kotlinx.android.synthetic.main.view_story.view.*
 import ru.nobird.android.stories.R
 import ru.nobird.android.stories.model.Story
 import ru.nobird.android.stories.model.StoryPart
@@ -43,9 +42,9 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         }
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.view_story, this, true)
-        progress = storyProgress
-        pager = storyViewPager
+        val view = LayoutInflater.from(context).inflate(R.layout.view_story, this, true)
+        progress = view.findViewById(R.id.storyProgress)
+        pager = view.findViewById(R.id.storyViewPager)
 
         progress.progressListener = object : PartialProgressBar.PartialProgressListener {
             override fun onPositionChanged(position: Int) {

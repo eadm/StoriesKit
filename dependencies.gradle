@@ -16,6 +16,7 @@ ext.versions = [
         appCompat            : '1.2.0',
         recyclerview         : '1.1.0',
         viewPager            : '1.0.0',
+        viewBindingDelegate  : '1.4.0',
 
         glide                : '4.11.0',
 
@@ -38,6 +39,7 @@ ext.libraries = [
         viewPager            : "androidx.viewpager:viewpager:$versions.viewPager",
         viewPager2           : "androidx.viewpager2:viewpager2:$versions.viewPager",
         recyclerview         : "androidx.recyclerview:recyclerview:$versions.recyclerview",
+        viewBindingDelegate  : "com.kirich1409.viewbindingpropertydelegate:vbpd-noreflection:$versions.viewBindingDelegate",
 
-        glide                : "com.github.bumptech.glide:glide:$versions.glide"
+        glide                : "com.github.bumptech.glide:glide:$versions.glide",
 ]

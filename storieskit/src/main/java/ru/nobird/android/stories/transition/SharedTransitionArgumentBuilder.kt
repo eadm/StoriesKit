@@ -5,7 +5,7 @@ import ru.nobird.android.stories.model.Story
 
 object SharedTransitionArgumentBuilder {
     fun createArguments(key: String, position: Int = 0, stories: List<Story>): Bundle =
-        Bundle(2)
+        Bundle(3)
             .apply {
                 putString(SharedTransitionIntentBuilder.EXTRA_KEY, key)
                 putInt(SharedTransitionIntentBuilder.EXTRA_POSITION, position)

@@ -1,17 +1,17 @@
 package ru.nobird.android.stories.sample.ui.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.nobird.android.stories.model.Story
 import ru.nobird.android.stories.sample.R
+import ru.nobird.android.stories.sample.databinding.ActivityStoriesBinding
 import ru.nobird.android.stories.sample.ui.delegate.StoriesFragmentDelegate
 import ru.nobird.android.stories.transition.SharedTransitionArgumentBuilder
 
-class StoriesFragment : Fragment() {
+class StoriesFragment : Fragment(R.layout.activity_stories) {
     companion object {
         fun newInstance(key: String, position: Int = 0, stories: List<Story>): Fragment =
             StoriesFragment().apply {
@@ -19,6 +19,7 @@ class StoriesFragment : Fragment() {
             }
     }
 
+    private val binding by viewBinding(ActivityStoriesBinding::bind)
     private lateinit var storiesDelegate: StoriesFragmentDelegate
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,11 +27,8 @@ class StoriesFragment : Fragment() {
         activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-        inflater.inflate(R.layout.activity_stories, container, false)
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        storiesDelegate = StoriesFragmentDelegate(this)
+        storiesDelegate = StoriesFragmentDelegate(this, binding)
         storiesDelegate.onCreate(savedInstanceState)
     }
 

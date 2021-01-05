@@ -3,15 +3,15 @@ package ru.nobird.android.stories.sample.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_navigation.*
-import ru.nobird.android.stories.sample.R
+import ru.nobird.android.stories.sample.databinding.ActivityNavigationBinding
 
 class NavigationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_navigation)
+        val binging = ActivityNavigationBinding.inflate(layoutInflater)
+        setContentView(binging.root)
 
-        activityImplementation.setOnClickListener { startActivity(Intent(this, MainActivity::class.java)) }
-        fragmentImplementation.setOnClickListener { startActivity(Intent(this, FragmentActivity::class.java)) }
+        binging.activityImplementation.setOnClickListener { startActivity(Intent(this, MainActivity::class.java)) }
+        binging.fragmentImplementation.setOnClickListener { startActivity(Intent(this, FragmentActivity::class.java)) }
     }
 }

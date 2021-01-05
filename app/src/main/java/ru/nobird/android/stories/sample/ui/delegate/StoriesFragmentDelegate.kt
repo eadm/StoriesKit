@@ -3,20 +3,21 @@ package ru.nobird.android.stories.sample.ui.delegate
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
-import kotlinx.android.synthetic.main.activity_stories.*
+import ru.nobird.android.stories.sample.databinding.ActivityStoriesBinding
 import ru.nobird.android.stories.sample.ui.delegate.part.PlainStoryPartViewDelegate
 import ru.nobird.android.stories.ui.custom.DismissableLayout
 import ru.nobird.android.stories.ui.delegate.StoriesFragmentDelegateBase
 import ru.nobird.android.stories.ui.delegate.StoryPartViewDelegate
 
 class StoriesFragmentDelegate(
-    private val fragment: Fragment
+    private val fragment: Fragment,
+    binding: ActivityStoriesBinding
 ) : StoriesFragmentDelegateBase(fragment) {
     override val dismissableLayout: DismissableLayout =
-        fragment.content
+        binding.content
 
     override val storiesViewPager: ViewPager =
-        fragment.storiesPager
+        binding.storiesPager
 
     override val arguments: Bundle =
         fragment.arguments ?: Bundle.EMPTY
@@ -25,8 +26,8 @@ class StoriesFragmentDelegate(
         listOf(PlainStoryPartViewDelegate())
 
     override fun onClose() {
-        fragment
-            .fragmentManager
+        fragment.activity
+            ?.supportFragmentManager
             ?.beginTransaction()
             ?.remove(fragment)
             ?.commitNow()

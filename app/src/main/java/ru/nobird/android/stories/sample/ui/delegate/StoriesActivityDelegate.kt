@@ -3,24 +3,25 @@ package ru.nobird.android.stories.sample.ui.delegate
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
-import kotlinx.android.synthetic.main.activity_stories.*
+import ru.nobird.android.stories.sample.databinding.ActivityStoriesBinding
 import ru.nobird.android.stories.sample.ui.delegate.part.PlainStoryPartViewDelegate
 import ru.nobird.android.stories.ui.custom.DismissableLayout
 import ru.nobird.android.stories.ui.delegate.StoriesActivityDelegateBase
 import ru.nobird.android.stories.ui.delegate.StoryPartViewDelegate
 
 class StoriesActivityDelegate(
-        activity: AppCompatActivity
+    activity: AppCompatActivity,
+    binding: ActivityStoriesBinding
 ) : StoriesActivityDelegateBase(activity) {
     override val dismissableLayout: DismissableLayout =
-            activity.content
+        binding.content
 
     override val storiesViewPager: ViewPager =
-            activity.storiesPager
+        binding.storiesPager
 
     override val arguments: Bundle =
-            activity.intent.extras ?: Bundle.EMPTY
+        activity.intent.extras ?: Bundle.EMPTY
 
     override val storyPartDelegates: List<StoryPartViewDelegate> =
-            listOf(PlainStoryPartViewDelegate())
+        listOf(PlainStoryPartViewDelegate())
 }
