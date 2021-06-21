@@ -33,9 +33,9 @@ dependencies {
 
 ext {
     publishedGroupId = 'ru.nobird.android'
-    libraryName = 'StoriesKit'
+    libraryName = 'storieskit'
     libraryVersion = versions.name
-    artifact = 'StoriesKit'
+    artifact = 'storieskit'
 }
 
 apply from: "../github_publication_android.gradle"
