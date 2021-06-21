@@ -1,8 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-
-apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.jfrog.bintray'
+apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -40,27 +38,10 @@ dependencies {
 }
 
 ext {
-    bintrayRepo = 'ru.nobird.android'
-    bintrayName = 'StoriesKit'
-
     publishedGroupId = 'ru.nobird.android'
-    libraryName = 'StoriesKit'
-    artifact = 'StoriesKit'
-
-    libraryDescription = 'A kit that helps to implement status stories in your application'
-
-    siteUrl = 'https://github.com/eadm/StoriesKit'
-    gitUrl = 'https://github.com/eadm/StoriesKit.git'
-
+    libraryName = 'storieskit'
     libraryVersion = versions.name
-
-    developerId = 'eadm'
-    developerName = 'Ruslan Davletshin'
-    developerEmail = 'smartmorefeed@gmail.com'
-
-    licenseName = 'The Apache Software License, Version 2.0'
-    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-    allLicenses = ["Apache-2.0"]
+    artifact = 'storieskit'
 }
 
-apply from: "../bintray.gradle"
+apply from: "../github_publication_android.gradle"
